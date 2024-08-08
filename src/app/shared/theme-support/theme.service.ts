@@ -8,9 +8,11 @@ import { hasNoValue, hasValue, isNotEmpty } from '../empty.util';
 import { RemoteData } from '../../core/data/remote-data';
 import { DSpaceObject } from '../../core/shared/dspace-object.model';
 import {
+  getAllSucceededRemoteDataPayload,
   getFirstCompletedRemoteData,
   getFirstSucceededRemoteData,
-  getRemoteDataPayload
+  getFirstSucceededRemoteDataPayload,
+  getRemoteDataPayload,
 } from '../../core/shared/operators';
 import { HeadTagConfig, Theme, ThemeConfig, themeFactory } from '../../../config/theme.model';
 import { NO_OP_ACTION_TYPE, NoOpAction } from '../ngrx/no-op.action';
@@ -45,7 +47,6 @@ export class ThemeService {
    * True if at least one theme depends on the route
    */
   hasDynamicTheme: boolean;
-
   private _isThemeLoading$ = new BehaviorSubject<boolean>(false);
   private _isThemeCSSLoading$ = new BehaviorSubject<boolean>(false);
 
@@ -57,6 +58,7 @@ export class ThemeService {
     @Inject(GET_THEME_CONFIG_FOR_FACTORY) private gtcf: (str) => ThemeConfig,
     private router: Router,
     @Inject(DOCUMENT) private document: any,
+    private collectionService: CollectionDataService,
   ) {
     // Create objects from the theme configs in the environment file
     this.themes = environment.themes.map((themeConfig: ThemeConfig) => themeFactory(themeConfig, injector));
@@ -305,10 +307,40 @@ export class ThemeService {
     const action$ = currentTheme$.pipe(
       switchMap((currentTheme: string) => {
         const snapshotWithData = this.findRouteData(activatedRouteSnapshot);
+
         if (this.hasDynamicTheme === true && isNotEmpty(this.themes)) {
           if (hasValue(snapshotWithData) && hasValue(snapshotWithData.data) && hasValue(snapshotWithData.data.dso)) {
             const dsoRD: RemoteData<DSpaceObject> = snapshotWithData.data.dso;
+            // If snapshot is a collection then we are on the Collection Browse page
+            // Add the collection.css styling to the <head>
+            if (snapshotWithData.data.dso.payload.type === 'collection') {
+              this.addCollectionCSSToHead(snapshotWithData.data.dso.payload.cssDisplay);
+            }
             if (dsoRD.hasSucceeded) {
+              // We must be viewing a non Collection Browse page
+              // Fetch the owning collection and all mapped collections
+              // We need to add the collection.css styling to the <head>
+
+              // Fetch all mapped collections
+              // Apply collection.css styling to the <head>
+              const MappedCollections =
+                this.collectionService.findMappedCollectionsFor(snapshotWithData.data.dso.payload)
+                  .pipe(getAllSucceededRemoteDataPayload())
+                  .subscribe((collections) => {
+                    collections.page.forEach(function (collection) {
+                      this.addCollectionCSSToHead(collection.cssDisplay);
+                    });
+                  });
+
+              // Fetch owning collection
+              // Apply collection.css styling to the <head>
+              const OwningCollection =
+                this.collectionService.findOwningCollectionFor(snapshotWithData.data.dso.payload)
+                  .pipe(getFirstSucceededRemoteDataPayload())
+                  .subscribe((collection) => {
+                    this.addCollectionCSSToHead(collection.cssDisplay);
+                  });
+
               // Start with the resolved dso and go recursively through its parents until you reach the top-level community
               return observableOf(dsoRD.payload).pipe(
                 this.getAncestorDSOs(),
@@ -332,7 +364,6 @@ export class ThemeService {
               })
             );
           }
-
           // check whether the route itself matches
           const routeMatch = this.themes.find((theme: Theme) => theme.matches(currentRouteUrl, undefined));
 
@@ -450,6 +481,18 @@ export class ThemeService {
       const match = dsos.find((dso: DSpaceObject) => theme.matches(currentRouteUrl, dso));
       return hasValue(match);
     });
+  }
+
+  /**
+   * Add collection.css to <head>
+   */
+  private addCollectionCSSToHead(css: string) {
+    const cssDisplay = css,
+      head = document.head || document.getElementsByTagName('head')[0],
+      style = document.createElement('style');
+    head.appendChild(style);
+    style.type = 'text/css';
+    style.appendChild(document.createTextNode(cssDisplay));
   }
 
   /**
