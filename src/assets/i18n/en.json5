@@ -1294,6 +1294,8 @@
 
   "collection.form.abstract": "Short Description",
 
+  "collection.form.css": "Collection styles (CSS)",
+
   "collection.form.description": "Introductory text (HTML)",
 
   "collection.form.errors.title.required": "Please enter a collection name",

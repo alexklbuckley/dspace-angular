@@ -48,6 +48,8 @@ import {
   getFirstCompletedRemoteData,
   getFirstSucceededRemoteData,
   getRemoteDataPayload,
+  getAllSucceededRemoteDataPayload,
+  getFirstSucceededRemoteDataPayload,
 } from '../../core/shared/operators';
 import {
   hasNoValue,
@@ -70,6 +72,8 @@ import {
   themeFactory,
 } from './theme.model';
 import { ThemeState } from './theme.reducer';
+import { Collection } from '../../core/shared/collection.model';
+import { CollectionDataService } from 'src/app/core/data/collection-data.service';
 
 export const themeStateSelector = createFeatureSelector<ThemeState>('theme');
 
@@ -91,7 +95,6 @@ export class ThemeService {
    * True if at least one theme depends on the route
    */
   hasDynamicTheme: boolean;
-
   private _isThemeLoading$ = new BehaviorSubject<boolean>(false);
   private _isThemeCSSLoading$ = new BehaviorSubject<boolean>(false);
 
@@ -103,6 +106,7 @@ export class ThemeService {
     @Inject(GET_THEME_CONFIG_FOR_FACTORY) private gtcf: (str) => ThemeConfig,
     private router: Router,
     @Inject(DOCUMENT) private document: any,
+    private collectionService: CollectionDataService,
   ) {
     // Create objects from the theme configs in the environment file
     this.themes = environment.themes.map((themeConfig: ThemeConfig) => themeFactory(themeConfig, injector));
@@ -337,15 +341,46 @@ export class ThemeService {
   updateThemeOnRouteChange$(currentRouteUrl: string, activatedRouteSnapshot: ActivatedRouteSnapshot): Observable<boolean> {
     // and the current theme from the store
     const currentTheme$: Observable<string> = this.store.pipe(select(currentThemeSelector));
-
     const action$: Observable<SetThemeAction | NoOpAction> = currentTheme$.pipe(
       switchMap((currentTheme: string) => {
         const snapshotWithData = this.findRouteData(activatedRouteSnapshot);
-        if (this.hasDynamicTheme === true && isNotEmpty(this.themes)) {
+	const dsoRD: RemoteData<DSpaceObject> = snapshotWithData.data.dso;
+
+	// If snapshot is a collection then we are on the Collection Browse page
+	// Add the collection.css styling to the <head>	
+	if (snapshotWithData.data.dso.payload.type === 'collection') {
+          this.addCollectionCSSToHead(snapshotWithData.data.dso.payload.cssDisplay);
+        }
+
+	if (this.hasDynamicTheme === true && isNotEmpty(this.themes)) {
           if (hasValue(snapshotWithData) && hasValue(snapshotWithData.data) && hasValue(snapshotWithData.data.dso)) {
             const dsoRD: RemoteData<DSpaceObject> = snapshotWithData.data.dso;
             if (dsoRD.hasSucceeded) {
-              // Start with the resolved dso and go recursively through its parents until you reach the top-level community
+
+              // We must be viewing a non Collection Browse page
+              // Fetch the owning collection and all mapped collections
+              // We need to add the collection.css styling to the <head>
+
+              // Fetch all mapped collections
+              // Apply collection.css styling to the <head>
+              var collections =
+                this.collectionService.findMappedCollectionsFor(snapshotWithData.data.dso.payload)
+                .pipe(getAllSucceededRemoteDataPayload())
+		.subscribe((collections) => {
+                  collections.page.forEach(function (collection) {
+                    this.addCollectionCSSToHead(collection.cssDisplay);
+		  })
+                });
+              // Fetch owning collection
+              // Apply collection.css styling to the <head>
+              var OwningCollection = 
+                this.collectionService.findOwningCollectionFor(snapshotWithData.data.dso.payload)
+                .pipe(getFirstSucceededRemoteDataPayload())
+                .subscribe((collection) => {
+                  this.addCollectionCSSToHead(collection.cssDisplay);
+		});
+
+	      // Start with the resolved dso and go recursively through its parents until you reach the top-level community
               return observableOf(dsoRD.payload).pipe(
                 this.getAncestorDSOs(),
                 switchMap((dsos: DSpaceObject[]) => {
@@ -372,7 +407,6 @@ export class ThemeService {
               }),
             );
           }
-
           // check whether the route itself matches
           return from(this.themes).pipe(
             concatMap((theme: Theme) => theme.matches(currentRouteUrl, undefined).pipe(
@@ -500,6 +534,18 @@ export class ThemeService {
       take(1),
       defaultIfEmpty(undefined),
     );
+  }
+
+  /**
+   * Add collection.css to <head>
+   */
+  private addCollectionCSSToHead(css: string) {
+    var css = css,
+       head = document.head || document.getElementsByTagName('head')[0],
+      style = document.createElement('style');
+    head.appendChild(style);
+    style.type = 'text/css';
+    style.appendChild(document.createTextNode(css));
   }
 
   /**
