@@ -130,6 +130,14 @@ export class Collection extends DSpaceObject implements ChildHALResource, Handle
     return this.firstMetadataValue('dc.description.tableofcontents');
   }
 
+  /**
+   * The heroimage test of this Collection
+   * Corresponds to the metadata field dc.heroimage.heroimage
+   */
+  get heroimageDisplay(): string {
+    return this.firstMetadataValue('dc.heroimage.heroimage');
+  }
+
   getParentLinkKey(): keyof this['_links'] {
     return 'parentCommunity';
   }
