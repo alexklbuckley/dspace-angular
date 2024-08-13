@@ -32,6 +32,7 @@ import {
   take,
   toArray,
 } from 'rxjs/operators';
+import { CollectionDataService } from 'src/app/core/data/collection-data.service';
 
 import { getDefaultThemeConfig } from '../../../config/config.util';
 import {
@@ -45,11 +46,11 @@ import { RemoteData } from '../../core/data/remote-data';
 import { distinctNext } from '../../core/shared/distinct-next';
 import { DSpaceObject } from '../../core/shared/dspace-object.model';
 import {
+  getAllSucceededRemoteDataPayload,
   getFirstCompletedRemoteData,
   getFirstSucceededRemoteData,
-  getRemoteDataPayload,
-  getAllSucceededRemoteDataPayload,
   getFirstSucceededRemoteDataPayload,
+  getRemoteDataPayload,
 } from '../../core/shared/operators';
 import {
   hasNoValue,
@@ -72,8 +73,6 @@ import {
   themeFactory,
 } from './theme.model';
 import { ThemeState } from './theme.reducer';
-import { Collection } from '../../core/shared/collection.model';
-import { CollectionDataService } from 'src/app/core/data/collection-data.service';
 
 export const themeStateSelector = createFeatureSelector<ThemeState>('theme');
 
@@ -344,17 +343,16 @@ export class ThemeService {
     const action$: Observable<SetThemeAction | NoOpAction> = currentTheme$.pipe(
       switchMap((currentTheme: string) => {
         const snapshotWithData = this.findRouteData(activatedRouteSnapshot);
-	const dsoRD: RemoteData<DSpaceObject> = snapshotWithData.data.dso;
+        const dsoRD: RemoteData<DSpaceObject> = snapshotWithData.data.dso;
 
-	// If snapshot is a collection then we are on the Collection Browse page
-	// Add the collection.css styling to the <head>	
-	if (snapshotWithData.data.dso.payload.type === 'collection') {
+        // If snapshot is a collection then we are on the Collection Browse page
+        // Add the collection.css styling to the <head>
+        if (snapshotWithData.data.dso.payload.type === 'collection') {
           this.addCollectionCSSToHead(snapshotWithData.data.dso.payload.cssDisplay);
         }
 
-	if (this.hasDynamicTheme === true && isNotEmpty(this.themes)) {
+        if (this.hasDynamicTheme === true && isNotEmpty(this.themes)) {
           if (hasValue(snapshotWithData) && hasValue(snapshotWithData.data) && hasValue(snapshotWithData.data.dso)) {
-            const dsoRD: RemoteData<DSpaceObject> = snapshotWithData.data.dso;
             if (dsoRD.hasSucceeded) {
 
               // We must be viewing a non Collection Browse page
@@ -363,24 +361,24 @@ export class ThemeService {
 
               // Fetch all mapped collections
               // Apply collection.css styling to the <head>
-              var collections =
+              const mappedCollections =
                 this.collectionService.findMappedCollectionsFor(snapshotWithData.data.dso.payload)
-                .pipe(getAllSucceededRemoteDataPayload())
-		.subscribe((collections) => {
-                  collections.page.forEach(function (collection) {
-                    this.addCollectionCSSToHead(collection.cssDisplay);
-		  })
-                });
+                  .pipe(getAllSucceededRemoteDataPayload())
+                  .subscribe((collections) => {
+                    collections.page.forEach(function (collection) {
+                      this.addCollectionCSSToHead(collection.cssDisplay);
+                    });
+                  });
               // Fetch owning collection
               // Apply collection.css styling to the <head>
-              var OwningCollection = 
+              const owningCollection =
                 this.collectionService.findOwningCollectionFor(snapshotWithData.data.dso.payload)
-                .pipe(getFirstSucceededRemoteDataPayload())
-                .subscribe((collection) => {
-                  this.addCollectionCSSToHead(collection.cssDisplay);
-		});
+                  .pipe(getFirstSucceededRemoteDataPayload())
+                  .subscribe((collection) => {
+                    this.addCollectionCSSToHead(collection.cssDisplay);
+                  });
 
-	      // Start with the resolved dso and go recursively through its parents until you reach the top-level community
+              // Start with the resolved dso and go recursively through its parents until you reach the top-level community
               return observableOf(dsoRD.payload).pipe(
                 this.getAncestorDSOs(),
                 switchMap((dsos: DSpaceObject[]) => {
@@ -540,12 +538,12 @@ export class ThemeService {
    * Add collection.css to <head>
    */
   private addCollectionCSSToHead(css: string) {
-    var css = css,
-       head = document.head || document.getElementsByTagName('head')[0],
+    const styleTag = css,
+      head = document.head || document.getElementsByTagName('head')[0],
       style = document.createElement('style');
     head.appendChild(style);
     style.type = 'text/css';
-    style.appendChild(document.createTextNode(css));
+    style.appendChild(document.createTextNode(styleTag));
   }
 
   /**
