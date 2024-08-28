@@ -2,6 +2,9 @@ import {
   CommonModule,
   DOCUMENT,
 } from '@angular/common';
+import {
+  EventEmitter,
+} from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import {
   ActivatedRouteSnapshot,
@@ -12,6 +15,9 @@ import { ROUTER_NAVIGATED } from '@ngrx/router-store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { hot } from 'jasmine-marbles';
 import { of as observableOf } from 'rxjs';
+import {
+  TranslateService,
+} from '@ngx-translate/core';
 
 import { LinkService } from '../../core/cache/builders/link.service';
 import { ConfigurationDataService } from '../../core/data/configuration-data.service';
@@ -69,13 +75,15 @@ describe('ThemeService', () => {
     uuid: 'top-community-uuid',
   });
 
+  const mockCollection = Object.assign(new Collection(), {
+    type: COLLECTION.value,
+    uuid: 'collection-uuid',
+    _links: { owningCommunity: { href: 'owning-community-link' } },
+  });
+
   function init() {
     ancestorDSOs = [
-      Object.assign(new Collection(), {
-        type: COLLECTION.value,
-        uuid: 'collection-uuid',
-        _links: { owningCommunity: { href: 'owning-community-link' } },
-      }),
+      mockCollection,
       Object.assign(new Community(), {
         type: COMMUNITY.value,
         uuid: 'sub-community-uuid',
@@ -90,6 +98,12 @@ describe('ThemeService', () => {
       },
     };
     configurationService = new ConfigurationDataServiceStub();
+    const translateServiceStub = {
+      get: () => observableOf('test-message of collection ' + mockCollection.name),
+      onLangChange: new EventEmitter(),
+      onTranslationChange: new EventEmitter(),
+      onDefaultLangChange: new EventEmitter(),
+    };
   }
 
   function setupServiceWithActions(mockActions) {
@@ -109,6 +123,7 @@ describe('ThemeService', () => {
         { provide: DSpaceObjectDataService, useValue: mockDsoService },
         { provide: Router, useValue: new RouterMock() },
         { provide: ConfigurationDataService, useValue: configurationService },
+        { provide: TranslateService, useValue: translateServiceStub },
       ],
     });
 
