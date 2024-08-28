@@ -4,4 +4,7 @@ export interface CollectionPageConfig extends Config {
   edit: {
     undoTimeout: number;
   };
+  routeThrough: {
+    collectionHomePage: boolean;
+  }
 }

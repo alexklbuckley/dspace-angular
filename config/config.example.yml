@@ -212,6 +212,9 @@ item:
 collection:
   edit:
     undoTimeout: 10000 # 10 seconds
+  # Routing config for optional collection home page
+  routeThrough:
+    collectionHomePage: false
 
 # Theme Config
 themes:
