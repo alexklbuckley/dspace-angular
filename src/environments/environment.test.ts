@@ -233,8 +233,11 @@ export const environment: BuildConfig = {
   },
   collection: {
     edit: {
-      undoTimeout: 10000 // 10 seconds
-    }
+      undoTimeout: 10000, // 10 seconds
+    },
+    routeThrough: {
+      collectionHomePage: false,
+    },
   },
   themes: [
     {

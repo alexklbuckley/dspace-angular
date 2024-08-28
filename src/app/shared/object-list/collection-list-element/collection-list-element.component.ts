@@ -4,16 +4,16 @@ import {
   Inject,
   OnInit,
 } from '@angular/core';
-
-import { Collection } from '../../../core/shared/collection.model';
-import { AbstractListableElementComponent } from '../../object-collection/shared/object-collection-element/abstract-listable-element.component';
-import { ViewMode } from '../../../core/shared/view-mode.model';
-import { listableObjectComponent } from '../../object-collection/shared/listable-object/listable-object.decorator';
 import {
   APP_CONFIG,
   AppConfig,
 } from 'src/config/app-config.interface';
+
 import { DSONameService } from '../../../core/breadcrumbs/dso-name.service';
+import { Collection } from '../../../core/shared/collection.model';
+import { ViewMode } from '../../../core/shared/view-mode.model';
+import { listableObjectComponent } from '../../object-collection/shared/listable-object/listable-object.decorator';
+import { AbstractListableElementComponent } from '../../object-collection/shared/object-collection-element/abstract-listable-element.component';
 
 @Component({
   selector: 'ds-collection-list-element',
