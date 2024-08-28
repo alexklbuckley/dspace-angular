@@ -2,6 +2,9 @@ import { CollectionListElementComponent } from './collection-list-element.compon
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ChangeDetectionStrategy, NO_ERRORS_SCHEMA } from '@angular/core';
 import { By } from '@angular/platform-browser';
+import { APP_CONFIG } from 'src/config/app-config.interface';
+import { environment } from 'src/environments/environment.test';
+
 import { Collection } from '../../../core/shared/collection.model';
 
 let collectionListElementComponent: CollectionListElementComponent;
@@ -29,12 +32,6 @@ const mockCollectionWithoutAbstract: Collection = Object.assign(new Collection()
   }
 });
 
-const environmentRouteThrough = {
-  routeThrough: {
-    collectionHomePage: true,
-  },
-};
-
 describe('CollectionListElementComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -42,7 +39,7 @@ describe('CollectionListElementComponent', () => {
       providers: [
         { provide: DSONameService, useValue: new DSONameServiceMock() },
         { provide: 'objectElementProvider', useValue: (mockCollectionWithAbstract) },
-        { provide: APP_CONFIG, useValue: environmentUseThumbs },
+        { provide: APP_CONFIG, useValue: environment },
         { provide: ActivatedRoute, useValue: new ActivatedRouteStub() },
       ],
 
