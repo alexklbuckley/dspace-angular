@@ -2,9 +2,7 @@ import {
   CommonModule,
   DOCUMENT,
 } from '@angular/common';
-import {
-  EventEmitter,
-} from '@angular/core';
+import { EventEmitter } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import {
   ActivatedRouteSnapshot,
@@ -13,11 +11,9 @@ import {
 import { provideMockActions } from '@ngrx/effects/testing';
 import { ROUTER_NAVIGATED } from '@ngrx/router-store';
 import { provideMockStore } from '@ngrx/store/testing';
+import { TranslateService } from '@ngx-translate/core';
 import { hot } from 'jasmine-marbles';
 import { of as observableOf } from 'rxjs';
-import {
-  TranslateService,
-} from '@ngx-translate/core';
 
 import { LinkService } from '../../core/cache/builders/link.service';
 import { ConfigurationDataService } from '../../core/data/configuration-data.service';
@@ -80,6 +76,12 @@ describe('ThemeService', () => {
     uuid: 'collection-uuid',
     _links: { owningCommunity: { href: 'owning-community-link' } },
   });
+  const translateServiceStub = {
+    get: () => observableOf('test-message of collection ' + mockCollection.name),
+    onLangChange: new EventEmitter(),
+    onTranslationChange: new EventEmitter(),
+    onDefaultLangChange: new EventEmitter(),
+  };
 
   function init() {
     ancestorDSOs = [
@@ -98,12 +100,6 @@ describe('ThemeService', () => {
       },
     };
     configurationService = new ConfigurationDataServiceStub();
-    const translateServiceStub = {
-      get: () => observableOf('test-message of collection ' + mockCollection.name),
-      onLangChange: new EventEmitter(),
-      onTranslationChange: new EventEmitter(),
-      onDefaultLangChange: new EventEmitter(),
-    };
   }
 
   function setupServiceWithActions(mockActions) {
@@ -133,9 +129,16 @@ describe('ThemeService', () => {
 
   describe('updateThemeOnRouteChange$', () => {
     const url = '/test/route';
-    const dso = Object.assign(new Community(), {
-      type: COMMUNITY.value,
-      uuid: '0958c910-2037-42a9-81c7-dca80e3892b4',
+    const mockCollection1 = Object.assign(new Collection(), { id: 'collection1' });
+    const mockCollection2 = Object.assign(new Collection(), { id: 'collection2' });
+    const dso = Object.assign(new Item(), {
+      _links: {
+        self: { href: 'fake-item-url/item' },
+      },
+      id: 'item',
+      uuid: 'item',
+      owningCollection: createSuccessfulRemoteDataObject$(mockCollection1),
+      mappedCollections: createSuccessfulRemoteDataObject$(mockCollection2),
     });
 
     function spyOnPrivateMethods() {
@@ -437,6 +440,7 @@ describe('ThemeService', () => {
           { provide: DSpaceObjectDataService, useValue: mockDsoService },
           { provide: Router, useValue: new RouterMock() },
           { provide: ConfigurationDataService, useValue: configurationService },
+          { provide: TranslateService, useValue: translateServiceStub },
         ],
       });
 
