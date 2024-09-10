@@ -46,8 +46,8 @@ import { NotificationsService } from '../../shared/notifications/notifications.s
 import { UploaderComponent } from '../../shared/upload/uploader/uploader.component';
 import { VarDirective } from '../../shared/utils/var.directive';
 import {
-  collectionFormEntityTypeSelectionConfig,
   administratorStyleFormModels,
+  collectionFormEntityTypeSelectionConfig,
 } from './collection-form.models';
 
 /**

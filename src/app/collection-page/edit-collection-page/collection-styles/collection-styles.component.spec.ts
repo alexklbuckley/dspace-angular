@@ -31,7 +31,7 @@ import {
   createSuccessfulRemoteDataObject$,
 } from '../../../shared/remote-data.utils';
 import { getCollectionItemTemplateRoute } from '../../collection-page-routing-paths';
-import { CollectionMetadataComponent } from './collection-metadata.component';
+import { CollectionMetadataComponent } from './collection-styles.component';
 
 describe('CollectionMetadataComponent', () => {
   let comp: CollectionMetadataComponent;

@@ -12,9 +12,9 @@ import { CollectionAccessControlComponent } from './collection-access-control/co
 import { CollectionAuthorizationsComponent } from './collection-authorizations/collection-authorizations.component';
 import { CollectionCurateComponent } from './collection-curate/collection-curate.component';
 import { CollectionMetadataComponent } from './collection-metadata/collection-metadata.component';
-import { CollectionStylesComponent } from './collection-styles/collection-styles.component';
 import { CollectionRolesComponent } from './collection-roles/collection-roles.component';
 import { CollectionSourceComponent } from './collection-source/collection-source.component';
+import { CollectionStylesComponent } from './collection-styles/collection-styles.component';
 import { EditCollectionPageComponent } from './edit-collection-page.component';
 
 /**

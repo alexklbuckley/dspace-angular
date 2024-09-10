@@ -48,7 +48,6 @@ import { VarDirective } from '../../shared/utils/var.directive';
 import {
   collectionFormEntityTypeSelectionConfig,
   collectionFormModels,
-  administratorStyleFormModels
 } from './collection-form.models';
 
 /**

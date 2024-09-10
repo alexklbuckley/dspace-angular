@@ -18,14 +18,8 @@ import {
   TranslateModule,
   TranslateService,
 } from '@ngx-translate/core';
-import {
-  combineLatest as combineLatestObservable,
-  Observable,
-} from 'rxjs';
-import {
-  map,
-  switchMap,
-} from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 import { CollectionDataService } from '../../../core/data/collection-data.service';
 import { ItemTemplateDataService } from '../../../core/data/item-template-data.service';
@@ -33,17 +27,11 @@ import { RemoteData } from '../../../core/data/remote-data';
 import { RequestService } from '../../../core/data/request.service';
 import { Collection } from '../../../core/shared/collection.model';
 import { Item } from '../../../core/shared/item.model';
-import { NoContent } from '../../../core/shared/NoContent.model';
-import {
-  getFirstCompletedRemoteData,
-  getFirstSucceededRemoteDataPayload,
-} from '../../../core/shared/operators';
+import { getFirstSucceededRemoteDataPayload } from '../../../core/shared/operators';
 import { ComcolMetadataComponent } from '../../../shared/comcol/comcol-forms/edit-comcol-page/comcol-metadata/comcol-metadata.component';
-import { hasValue } from '../../../shared/empty.util';
 import { NotificationsService } from '../../../shared/notifications/notifications.service';
 import { VarDirective } from '../../../shared/utils/var.directive';
 import { CollectionStylesFormComponent } from '../../collection-form/collection-form.styles';
-import { getCollectionItemTemplateRoute } from '../../collection-page-routing-paths';
 
 /**
  * Component for editing a collection's metadata
