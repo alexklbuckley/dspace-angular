@@ -47,8 +47,7 @@ import { UploaderComponent } from '../../shared/upload/uploader/uploader.compone
 import { VarDirective } from '../../shared/utils/var.directive';
 import {
   collectionFormEntityTypeSelectionConfig,
-  collectionFormModels,
-  administratorStyleFormModels
+  administratorStyleFormModels,
 } from './collection-form.models';
 
 /**
@@ -70,7 +69,7 @@ import {
     VarDirective,
   ],
 })
-export class CollectionFormComponent extends ComColFormComponent<Collection> implements OnInit, OnChanges {
+export class CollectionStylesFormComponent extends ComColFormComponent<Collection> implements OnInit, OnChanges {
   /**
    * @type {Collection} A new collection when a collection is being created, an existing Input collection when a collection is being edited
    */
@@ -149,7 +148,7 @@ export class CollectionFormComponent extends ComColFormComponent<Collection> imp
         }
       });
 
-      this.formModel = entityTypes.length === 0 ? collectionFormModels : [...collectionFormModels, this.entityTypeSelection];
+      this.formModel = entityTypes.length === 0 ? administratorStyleFormModels : [...administratorStyleFormModels, this.entityTypeSelection];
 
       super.ngOnInit();
       this.chd.detectChanges();

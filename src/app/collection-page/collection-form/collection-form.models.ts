@@ -14,7 +14,19 @@ export const collectionFormEntityTypeSelectionConfig: DynamicSelectModelConfig<s
 };
 
 /**
- * The dynamic form fields used for creating/editing a collection
+ * The dynamic form fields used for an administrator user creating/editing a collection
+ * @type {(DynamicInputModel | DynamicTextAreaModel)[]}
+ */
+export const administratorStyleFormModels: DynamicFormControlModel[] = [
+    new DynamicTextAreaModel({
+    id: 'css',
+    name: 'dc.collection.css',
+    spellCheck: environment.form.spellCheck,
+  }),
+];
+
+/**
+ * The dynamic form fields used for a non-administrator user creating/editing a collection
  * @type {(DynamicInputModel | DynamicTextAreaModel)[]}
  */
 export const collectionFormModels: DynamicFormControlModel[] = [
@@ -52,11 +64,6 @@ export const collectionFormModels: DynamicFormControlModel[] = [
   new DynamicTextAreaModel({
     id: 'license',
     name: 'dc.rights.license',
-    spellCheck: environment.form.spellCheck,
-  }),
-  new DynamicTextAreaModel({
-    id: 'css',
-    name: 'collection.css',
     spellCheck: environment.form.spellCheck,
   }),
 ];
