@@ -1,0 +1,24 @@
+<div class="jumbotron jumbotron-fluid">
+    <div class="container homePanel py-4 mb-4 justify-content-center">
+      <div class="d-flex flex-wrap">
+        <div>
+          <h1 class="display-4">The AUT Research Repository</h1>
+          <p class="lead px-4">Full text theses & dissertations produced by AUT's Postgraduate students and full text of scholarly works from AUT researchers.</p>
+          <ds-search-form [inPlaceSearch]="false" [searchPlaceholder]="'home.search-form.placeholder' | translate" class="homePageSearch"></ds-search-form>
+        </div>
+      </div>
+    </div>
+    <div class="container container-fluid py-4">
+      <div class="d-flex flex-row justify-content-center">
+        <div class="col-sm homePanel mr-4 py-4 text-center">
+          <h1 class="display-5">Deposit your thesis</h1>
+          <p>AUT postgraduate students, deposit your thesis here.</p>
+          <!-- for now link to /submit rather than /submit/thesis because of the sso issues with thesis deposit form -->
+          <p>
+          <a class="btn btn-primary btn-lg" href="/submit" style="color:white;">Deposit your thesis</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
