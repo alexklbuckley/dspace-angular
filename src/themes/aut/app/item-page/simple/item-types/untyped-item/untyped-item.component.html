@@ -36,6 +36,20 @@
         [metadataFields]="['dc.contributor.author', 'dc.creator']"
         [label]="'relationships.isAuthorOf' | translate">
       </ds-metadata-representation-list>
+      <ds-metadata-representation-list class="ds-item-page-mixed-author-field"
+        [parentItem]="object"
+        [itemType]="'Person'"
+        [metadataFields]="['dc.contributor.advisor']"
+        [label]="'item.page.advisor' | translate">
+      </ds-metadata-representation-list>
+      <ds-generic-item-page-field [item]="object"
+        [fields]="['dc.type']"
+        [label]="'item.page.dc.type'">
+      </ds-generic-item-page-field>
+      <ds-generic-item-page-field [item]="object"
+        [fields]="['thesis.degree.name']"
+        [label]="'item.page.thesis.name'">
+      </ds-generic-item-page-field>
       <ds-generic-item-page-field [item]="object"
         [fields]="['journal.title']"
         [label]="'item.page.journal-title'">
