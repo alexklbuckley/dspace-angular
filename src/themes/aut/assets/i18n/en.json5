@@ -1,7 +1,50 @@
 {
   // DSpace default: "All of DSpace"
-  "menu.section.browse_global": "Browse DSpace",
+  "menu.section.browse_global": "Browse",
 
   // DSpace default: "DSpace Angular :: "
-  "repository.title.prefix": "DSpace :: ",
+  "repository.title.prefix": "Tuwhera Open Repository :: ",
+
+  // DSpace default: "Permanent URI for this collection",
+  "collection.page.handle": "Permanent link for this collection",
+
+  // DSpace default: "Permanent URI for this community",
+  "community.page.handle": "Permanent link for this community",
+
+  // DSpace default: "URI",
+  "item.page.uri": "Permanent link",
+
+  //DSpace default: "Citation"
+  "item.page.citation": "Source",
+
+  // Additions - not in default
+  // item.page
+  "item.page.advisor": "Supervisor",
+
+  "item.page.thesis.name": "Degree name",
+
+  "item.page.dc.type": "Item type",
+
+  "item.page.doi": "DOI",
+
+  "item.page.relation.uri": "Publisher's version",
+
+  "item.page.dc.rights": "Rights statement",
+
+  // browse
+  "browse.metadata.advisor": "Supervisor",
+
+  "browse.metadata.advisor.breadcrumbs": "Browse by Supervisor",
+
+  "menu.section.browse_global_by_advisor": "By Supervisor",
+
+  "browse.comcol.by.advisor": "By Supervisor",
+
+  // footer
+  "footer.link.tuwhera": "Tuwhera",
+
+  //submission form
+  "submission.sections.submit.progressbar.describe.step1": "About you and your thesis",
+
+  "submission.sections.submit.progressbar.describe.step2": "More details about your thesis"
 }
