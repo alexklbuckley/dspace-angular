@@ -46,10 +46,8 @@ import { RemoteData } from '../../core/data/remote-data';
 import { distinctNext } from '../../core/shared/distinct-next';
 import { DSpaceObject } from '../../core/shared/dspace-object.model';
 import {
-  getAllSucceededRemoteDataPayload,
   getFirstCompletedRemoteData,
   getFirstSucceededRemoteData,
-  getFirstSucceededRemoteDataPayload,
   getRemoteDataPayload,
 } from '../../core/shared/operators';
 import {
@@ -345,39 +343,9 @@ export class ThemeService {
         const snapshotWithData = this.findRouteData(activatedRouteSnapshot);
         const dsoRD: RemoteData<DSpaceObject> = snapshotWithData.data.dso;
 
-        // If snapshot is a collection then we are on the Collection Browse page
-        // Add the collection.css styling to the <head>
-        if (snapshotWithData.data.dso.payload.type === 'collection') {
-          this.addCollectionCSSToHead(snapshotWithData.data.dso.payload.cssDisplay);
-        }
-
         if (this.hasDynamicTheme === true && isNotEmpty(this.themes)) {
           if (hasValue(snapshotWithData) && hasValue(snapshotWithData.data) && hasValue(snapshotWithData.data.dso)) {
             if (dsoRD.hasSucceeded) {
-
-              // We must be viewing a non Collection Browse page
-              // Fetch the owning collection and all mapped collections
-              // We need to add the collection.css styling to the <head>
-
-              // Fetch all mapped collections
-              // Apply collection.css styling to the <head>
-              const mappedCollections =
-                this.collectionService.findMappedCollectionsFor(snapshotWithData.data.dso.payload)
-                  .pipe(getAllSucceededRemoteDataPayload())
-                  .subscribe((collections) => {
-                    collections.page.forEach(function (collection) {
-                      this.addCollectionCSSToHead(collection.cssDisplay);
-                    });
-                  });
-              // Fetch owning collection
-              // Apply collection.css styling to the <head>
-              const owningCollection =
-                this.collectionService.findOwningCollectionFor(snapshotWithData.data.dso.payload)
-                  .pipe(getFirstSucceededRemoteDataPayload())
-                  .subscribe((collection) => {
-                    this.addCollectionCSSToHead(collection.cssDisplay);
-                  });
-
               // Start with the resolved dso and go recursively through its parents until you reach the top-level community
               return observableOf(dsoRD.payload).pipe(
                 this.getAncestorDSOs(),

@@ -26,16 +26,14 @@ import { Item } from '../../../core/shared/item.model';
 import { AuthServiceMock } from '../../../shared/mocks/auth.service.mock';
 import { NotificationsService } from '../../../shared/notifications/notifications.service';
 import {
-  createFailedRemoteDataObject$,
   createSuccessfulRemoteDataObject,
   createSuccessfulRemoteDataObject$,
 } from '../../../shared/remote-data.utils';
-import { getCollectionItemTemplateRoute } from '../../collection-page-routing-paths';
-import { CollectionMetadataComponent } from './collection-styles.component';
+import { CollectionStylesComponent } from './collection-styles.component';
 
-describe('CollectionMetadataComponent', () => {
-  let comp: CollectionMetadataComponent;
-  let fixture: ComponentFixture<CollectionMetadataComponent>;
+describe('CollectionStylesComponent', () => {
+  let comp: CollectionStylesComponent;
+  let fixture: ComponentFixture<CollectionStylesComponent>;
   let router: Router;
   let itemTemplateService: ItemTemplateDataService;
 
@@ -76,7 +74,7 @@ describe('CollectionMetadataComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot(), CommonModule, RouterTestingModule, CollectionMetadataComponent],
+      imports: [TranslateModule.forRoot(), CommonModule, RouterTestingModule, CollectionStylesComponent],
       providers: [
         { provide: CollectionDataService, useValue: {} },
         { provide: ItemTemplateDataService, useValue: itemTemplateServiceStub },
@@ -94,7 +92,7 @@ describe('CollectionMetadataComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CollectionMetadataComponent);
+    fixture = TestBed.createComponent(CollectionStylesComponent);
     comp = fixture.componentInstance;
     itemTemplateService = (comp as any).itemTemplateService;
     spyOn(comp, 'ngOnInit');
@@ -107,41 +105,6 @@ describe('CollectionMetadataComponent', () => {
   describe('frontendURL', () => {
     it('should have the right frontendURL set', () => {
       expect((comp as any).frontendURL).toEqual('/collections/');
-    });
-  });
-
-  describe('addItemTemplate', () => {
-    it('should navigate to the collection\'s itemtemplate page', () => {
-      comp.addItemTemplate();
-      expect(routerMock.navigate).toHaveBeenCalledWith([getCollectionItemTemplateRoute(collection.uuid)]);
-    });
-  });
-
-  describe('deleteItemTemplate', () => {
-    beforeEach(() => {
-      (itemTemplateService.delete as jasmine.Spy).and.returnValue(createSuccessfulRemoteDataObject$({}));
-      comp.deleteItemTemplate();
-    });
-
-    it('should call ItemTemplateService.delete', () => {
-      expect(itemTemplateService.delete).toHaveBeenCalledWith(template.uuid);
-    });
-
-    describe('when delete returns a success', () => {
-      it('should display a success notification', () => {
-        expect(notificationsService.success).toHaveBeenCalled();
-      });
-    });
-
-    describe('when delete returns a failure', () => {
-      beforeEach(() => {
-        (itemTemplateService.delete as jasmine.Spy).and.returnValue(createFailedRemoteDataObject$());
-        comp.deleteItemTemplate();
-      });
-
-      it('should display an error notification', () => {
-        expect(notificationsService.error).toHaveBeenCalled();
-      });
     });
   });
 });

@@ -130,7 +130,16 @@ describe('ThemeService', () => {
   describe('updateThemeOnRouteChange$', () => {
     const url = '/test/route';
     const mockCollection1 = Object.assign(new Collection(), { id: 'collection1' });
-    const mockCollection2 = Object.assign(new Collection(), { id: 'collection2' });
+    const mockCollection2 = Object.assign(new Collection(), {
+      id: 'collection2',
+      metadata: [
+        {
+          key: 'collection.css',
+          language: null,
+          value: '',
+        },
+      ],
+    });
     const dso = Object.assign(new Item(), {
       _links: {
         self: { href: 'fake-item-url/item' },
@@ -160,6 +169,7 @@ describe('ThemeService', () => {
         spyOnPrivateMethods();
       });
 
+      //fails
       it('should set the theme it receives from the route url', (done) => {
         themeService.updateThemeOnRouteChange$(url, {} as ActivatedRouteSnapshot).subscribe(() => {
           expect((themeService as any).store.dispatch).toHaveBeenCalledWith(new SetThemeAction('custom') as any);
@@ -167,6 +177,7 @@ describe('ThemeService', () => {
         });
       });
 
+      //fails
       it('should return true', (done) => {
         themeService.updateThemeOnRouteChange$(url, {} as ActivatedRouteSnapshot).subscribe((result) => {
           expect(result).toEqual(true);
@@ -188,6 +199,7 @@ describe('ThemeService', () => {
         (themeService as any).themes = [];
       });
 
+      //fails
       it('should not dispatch any action', (done) => {
         themeService.updateThemeOnRouteChange$(url, {} as ActivatedRouteSnapshot).subscribe(() => {
           expect((themeService as any).store.dispatch).not.toHaveBeenCalled();
@@ -195,6 +207,7 @@ describe('ThemeService', () => {
         });
       });
 
+      //fails
       it('should return false', (done) => {
         themeService.updateThemeOnRouteChange$(url, {} as ActivatedRouteSnapshot).subscribe((result) => {
           expect(result).toEqual(false);
@@ -223,6 +236,7 @@ describe('ThemeService', () => {
         });
       });
 
+      //fails
       it('should match the theme to the dso', (done) => {
         themeService.updateThemeOnRouteChange$(url, snapshot).subscribe(() => {
           expect((themeService as any).matchThemeToDSOs).toHaveBeenCalled();
@@ -230,6 +244,8 @@ describe('ThemeService', () => {
         });
       });
 
+
+      //fails
       it('should set the theme it receives from the data dso', (done) => {
         themeService.updateThemeOnRouteChange$(url, snapshot).subscribe(() => {
           expect((themeService as any).store.dispatch).toHaveBeenCalledWith(new SetThemeAction('custom') as any);
@@ -237,6 +253,7 @@ describe('ThemeService', () => {
         });
       });
 
+      ///fails
       it('should return true', (done) => {
         themeService.updateThemeOnRouteChange$(url, snapshot).subscribe((result) => {
           expect(result).toEqual(true);
@@ -265,6 +282,7 @@ describe('ThemeService', () => {
         });
       });
 
+      //fails
       it('should match the theme to the dso found through the scope', (done) => {
         themeService.updateThemeOnRouteChange$(url, snapshot).subscribe(() => {
           expect((themeService as any).matchThemeToDSOs).toHaveBeenCalled();
@@ -272,6 +290,7 @@ describe('ThemeService', () => {
         });
       });
 
+      //fails
       it('should set the theme it receives from the dso found through the scope', (done) => {
         themeService.updateThemeOnRouteChange$(url, snapshot).subscribe(() => {
           expect((themeService as any).store.dispatch).toHaveBeenCalledWith(new SetThemeAction('custom') as any);
@@ -279,6 +298,7 @@ describe('ThemeService', () => {
         });
       });
 
+      //fails
       it('should return true', (done) => {
         themeService.updateThemeOnRouteChange$(url, snapshot).subscribe((result) => {
           expect(result).toEqual(true);
