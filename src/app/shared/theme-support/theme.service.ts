@@ -1,4 +1,5 @@
-import { Injectable, Inject, Injector } from '@angular/core';
+import { Injectable, Inject, Injector, SecurityContext } from '@angular/core';
+import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 import { Store, createFeatureSelector, createSelector, select } from '@ngrx/store';
 import { BehaviorSubject, EMPTY, Observable, of as observableOf } from 'rxjs';
 import { ThemeState } from './theme.reducer';
@@ -43,6 +44,8 @@ export class ThemeService {
    */
   themes: Theme[];
 
+  sanitizedStyles: SafeStyle;
+
   /**
    * True if at least one theme depends on the route
    */
@@ -59,6 +62,7 @@ export class ThemeService {
     private router: Router,
     @Inject(DOCUMENT) private document: any,
     private collectionService: CollectionDataService,
+    private sanitizer: DomSanitizer,
   ) {
     // Create objects from the theme configs in the environment file
     this.themes = environment.themes.map((themeConfig: ThemeConfig) => themeFactory(themeConfig, injector));
@@ -307,7 +311,7 @@ export class ThemeService {
     const action$ = currentTheme$.pipe(
       switchMap((currentTheme: string) => {
         const snapshotWithData = this.findRouteData(activatedRouteSnapshot);
-
+	this.addCollectionCSSToHead('');
         if (this.hasDynamicTheme === true && isNotEmpty(this.themes)) {
           if (hasValue(snapshotWithData) && hasValue(snapshotWithData.data) && hasValue(snapshotWithData.data.dso)) {
             const dsoRD: RemoteData<DSpaceObject> = snapshotWithData.data.dso;
@@ -493,11 +497,24 @@ export class ThemeService {
    * Add collection.css to <head>
    */
   private addCollectionCSSToHead(css: string) {
+    // Clear collectionCSS style tag
+    if (hasValue(document.getElementById('collectionCSS'))) {
+      document.getElementById('collectionCSS').remove();
+    }
+
+    if (hasNoValue(css)) {
+      return;
+    }
+
+    // Add collectionCSS style tag
+    const sanitizedCSS = this.sanitizer.sanitize(SecurityContext.STYLE, css);
     const cssDisplay = css,
       head = document.head || document.getElementsByTagName('head')[0],
       style = document.createElement('style');
+
     head.appendChild(style);
     style.type = 'text/css';
+    style.id   = 'collectionCSS';
     style.appendChild(document.createTextNode(cssDisplay));
   }
 
