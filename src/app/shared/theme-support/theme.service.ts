@@ -3,7 +3,9 @@ import {
   Inject,
   Injectable,
   Injector,
+  SecurityContext,
 } from '@angular/core';
+import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 import {
   ActivatedRouteSnapshot,
   ResolveEnd,
@@ -33,7 +35,6 @@ import {
   toArray,
 } from 'rxjs/operators';
 import { CollectionDataService } from 'src/app/core/data/collection-data.service';
-
 import { getDefaultThemeConfig } from '../../../config/config.util';
 import {
   HeadTagConfig,
@@ -90,6 +91,8 @@ export class ThemeService {
    */
   themes: Theme[];
 
+  sanitizedStyles: SafeStyle;
+
   /**
    * True if at least one theme depends on the route
    */
@@ -106,6 +109,7 @@ export class ThemeService {
     private router: Router,
     @Inject(DOCUMENT) private document: any,
     private collectionService: CollectionDataService,
+    private sanitizer: DomSanitizer,
   ) {
     // Create objects from the theme configs in the environment file
     this.themes = environment.themes.map((themeConfig: ThemeConfig) => themeFactory(themeConfig, injector));
@@ -185,6 +189,9 @@ export class ThemeService {
    * Should be called when initializing the app.
    */
   listenForRouteChanges(): void {
+
+
+
     this.router.events.pipe(
       filter(event => event instanceof ResolveEnd),
       switchMap((event: ResolveEnd) => this.updateThemeOnRouteChange$(event.urlAfterRedirects, event.state.root)),
@@ -343,7 +350,6 @@ export class ThemeService {
     const action$: Observable<SetThemeAction | NoOpAction> = currentTheme$.pipe(
       switchMap((currentTheme: string) => {
         const snapshotWithData = this.findRouteData(activatedRouteSnapshot);
-
         if (this.hasDynamicTheme === true && isNotEmpty(this.themes)) {
           if (hasValue(snapshotWithData) && hasValue(snapshotWithData.data) && hasValue(snapshotWithData.data.dso)) {
             const dsoRD: RemoteData<DSpaceObject> = snapshotWithData.data.dso;
@@ -543,9 +549,13 @@ export class ThemeService {
    * Add collection.css to <head>
    */
   private addCollectionCSSToHead(css: string) {
-    const cssDisplay = css,
+    const sanitizedCSS = this.sanitizer.sanitize(SecurityContext.STYLE, css);
+
+    console.log(sanitizedCSS);
+    const cssDisplay = sanitizedCSS,
       head = document.head || document.getElementsByTagName('head')[0],
       style = document.createElement('style');
+
     head.appendChild(style);
     style.type = 'text/css';
     style.appendChild(document.createTextNode(cssDisplay));
