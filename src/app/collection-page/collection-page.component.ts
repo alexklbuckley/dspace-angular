@@ -1,12 +1,17 @@
 import {
   AsyncPipe,
+  NgClass,
   NgIf,
+  NgStyle,
 } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  Input,
   OnInit,
+  SecurityContext,
 } from '@angular/core';
+import { DomSanitizer} from '@angular/platform-browser';
 import {
   ActivatedRoute,
   Router,
@@ -66,6 +71,8 @@ import { getCollectionPageRoute } from './collection-page-routing-paths';
     ThemedComcolPageContentComponent,
     ErrorComponent,
     NgIf,
+    NgClass,
+    NgStyle,
     ThemedLoadingComponent,
     TranslateModule,
     ViewTrackerComponent,
@@ -103,6 +110,7 @@ export class CollectionPageComponent implements OnInit {
     protected authService: AuthService,
     protected authorizationDataService: AuthorizationDataService,
     public dsoNameService: DSONameService,
+    protected sanitizer: DomSanitizer,
   ) {
   }
 
@@ -129,5 +137,7 @@ export class CollectionPageComponent implements OnInit {
     return isNotEmpty(object);
   }
 
-
+  public sanitizeCustomStyles(value) {
+    return this.sanitizer.sanitize(SecurityContext.STYLE, value);
+  }
 }

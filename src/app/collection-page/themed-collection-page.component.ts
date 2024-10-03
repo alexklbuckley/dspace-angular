@@ -1,3 +1,4 @@
+import { NgStyle } from '@angular/common';
 import { Component } from '@angular/core';
 
 import { ThemedComponent } from '../shared/theme-support/themed.component';
@@ -11,7 +12,7 @@ import { CollectionPageComponent } from './collection-page.component';
   styleUrls: [],
   templateUrl: '../shared/theme-support/themed.component.html',
   standalone: true,
-  imports: [CollectionPageComponent],
+  imports: [CollectionPageComponent, NgStyle],
 })
 export class ThemedCollectionPageComponent extends ThemedComponent<CollectionPageComponent> {
   protected getComponentName(): string {

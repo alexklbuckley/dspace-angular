@@ -1,6 +1,7 @@
 import {
   AsyncPipe,
   NgIf,
+  NgStyle,
 } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -42,6 +43,7 @@ import { ViewTrackerComponent } from '../../../../app/statistics/angulartics/dsp
     ThemedComcolPageContentComponent,
     ErrorComponent,
     NgIf,
+    NgStyle,
     ThemedLoadingComponent,
     TranslateModule,
     ViewTrackerComponent,

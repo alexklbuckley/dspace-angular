@@ -10,6 +10,7 @@ import {
   ActivatedRouteSnapshot,
   ResolveEnd,
   Router,
+  RoutesRecognized
 } from '@angular/router';
 import {
   createFeatureSelector,
@@ -30,6 +31,7 @@ import {
   expand,
   filter,
   map,
+  pairwise,
   switchMap,
   take,
   toArray,
@@ -189,8 +191,6 @@ export class ThemeService {
    * Should be called when initializing the app.
    */
   listenForRouteChanges(): void {
-
-
 
     this.router.events.pipe(
       filter(event => event instanceof ResolveEnd),
@@ -549,16 +549,7 @@ export class ThemeService {
    * Add collection.css to <head>
    */
   private addCollectionCSSToHead(css: string) {
-    const sanitizedCSS = this.sanitizer.sanitize(SecurityContext.STYLE, css);
-
-    console.log(sanitizedCSS);
-    const cssDisplay = sanitizedCSS,
-      head = document.head || document.getElementsByTagName('head')[0],
-      style = document.createElement('style');
-
-    head.appendChild(style);
-    style.type = 'text/css';
-    style.appendChild(document.createTextNode(cssDisplay));
+    return this.sanitizer.sanitize(SecurityContext.STYLE, css);
   }
 
   /**
