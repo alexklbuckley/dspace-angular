@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 // import { EagerThemeModule as DSpaceEagerThemeModule } from './dspace/eager-theme.module';
 // import { EagerThemeModule as CustomEagerThemeModule } from './custom/eager-theme.module';
 import { EagerThemeModule as autEagerThemeModule } from './aut/eager-theme.module';
+import { EagerThemeModule as showcasesEagerThemeModule } from './showcases/eager-theme.module';
 
 /**
  * This module bundles the eager theme modules for all available themes.
@@ -15,6 +16,7 @@ import { EagerThemeModule as autEagerThemeModule } from './aut/eager-theme.modul
     // DSpaceEagerThemeModule,
     // CustomEagerThemeModule,
     autEagerThemeModule,
+    showcasesEagerThemeModule,
   ],
 })
 export class EagerThemesModule {

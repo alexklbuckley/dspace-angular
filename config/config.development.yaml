@@ -249,15 +249,11 @@ themes:
   #   extends: 'custom',
   #   handle: '10673/12'
   #
-  - name: aut
-  - name: custom
-    uuid: 5b7854aa-901e-4c5c-a457-7928503cb23f
   # # A theme with only a name will match every route
   # name: 'custom'
-  #
-  # # This theme will use the default bootstrap styling for DSpace components
-  # - name: BASE_THEME_NAME
-  #
+  - name: aut
+  - name: showcases
+    uuid: 7c74861d-a720-467a-bef2-464286c0224e
   #  - name: dspace
   #  headTags:
   #  - tagName: link

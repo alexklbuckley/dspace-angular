@@ -66,6 +66,11 @@
                 "input": "src/themes/aut/styles/theme.scss",
                 "inject": false,
                 "bundleName": "aut-theme"
+              },
+              {
+                "input": "src/themes/showcases/styles/theme.scss",
+                "inject": false,
+                "bundleName": "showcases-theme"
               }
             ],
             "scripts": [],
