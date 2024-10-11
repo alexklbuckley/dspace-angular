@@ -41,17 +41,17 @@ $cyan: #006666 !default;
 $yellow: #ec9433 !default;
 $red: #CF4444 !default;
 $dark: darken($blue, 17%) !default;
-$darkorange: #d93b20 !default;
+$mulberry: #770737 !default;
 $white: #ffffff !default;
 
-$theme-colors: ( primary: $darkorange, secondary: $gray-700, success: $green, info: $cyan, warning: $yellow, danger: $red, light: $gray-100, dark: $dark ) !default;
+$theme-colors: ( primary: $mulberry, secondary: $gray-700, success: $green, info: $cyan, warning: $yellow, danger: $red, light: $gray-100, dark: $dark ) !default;
 
 $link-color: map-get($theme-colors, primary) !default;
 
 :root {
-  --ds-navbar-link-color: #{$darkorange} !important;
-  --ds-navbar-link-color-hover: #{darken($darkorange, 15%)} !important;
-  --ds-header-icon-color: #{$darkorange} !important;
-  --ds-header-icon-color-hover: #{darken($darkorange, 15%)} !important;
+  --ds-navbar-link-color: #{$mulberry} !important;
+  --ds-navbar-link-color-hover: #{darken($mulberry, 15%)} !important;
+  --ds-header-icon-color: #{$mulberry} !important;
+  --ds-header-icon-color-hover: #{darken($mulberry, 15%)} !important;
 }
 
