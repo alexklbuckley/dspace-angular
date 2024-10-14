@@ -27,6 +27,7 @@ import { distinctNext } from 'src/app/core/shared/distinct-next';
 import { DOCUMENT } from '@angular/common';
 import { getDefaultThemeConfig } from '../../../config/config.util';
 import { BASE_THEME_NAME } from './theme.constants';
+import { CollectionDataService } from 'src/app/core/data/collection-data.service';
 
 export const themeStateSelector = createFeatureSelector<ThemeState>('theme');
 

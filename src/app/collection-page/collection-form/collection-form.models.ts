@@ -15,7 +15,6 @@ export const administratorStyleFormModels: DynamicFormControlModel[] = [
   new DynamicTextAreaModel({
     id: 'css',
     name: 'dspace.collection.css',
-    spellCheck: environment.form.spellCheck,
   }),
 ];
 
@@ -54,5 +53,5 @@ export const collectionFormModels: DynamicFormControlModel[] = [
   new DynamicTextAreaModel({
     id: 'license',
     name: 'dc.rights.license',
-  })
+  }),
 ];

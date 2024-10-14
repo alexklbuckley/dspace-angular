@@ -20,7 +20,7 @@ import { EntityTypeDataService } from '../../core/data/entity-type-data.service'
 import { ItemType } from '../../core/shared/item-relationships/item-type.model';
 import { MetadataValue } from '../../core/shared/metadata.models';
 import { getFirstSucceededRemoteListPayload } from '../../core/shared/operators';
-import { collectionFormEntityTypeSelectionConfig, collectionFormModels, } from './collection-form.models';
+import { collectionFormEntityTypeSelectionConfig, collectionFormModels } from './collection-form.models';
 import { NONE_ENTITY_TYPE } from '../../core/shared/item-relationships/item-type.resource-type';
 
 /**
@@ -92,7 +92,6 @@ export class CollectionFormComponent extends ComColFormComponent<Collection> imp
             this.entityTypeSelection.disabled = true;
           }
         });
-
         this.formModel = [...collectionFormModels, this.entityTypeSelection];
 
         super.ngOnInit();

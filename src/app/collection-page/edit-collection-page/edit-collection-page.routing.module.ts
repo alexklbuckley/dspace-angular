@@ -6,6 +6,7 @@ import { CollectionMetadataComponent } from './collection-metadata/collection-me
 import { CollectionRolesComponent } from './collection-roles/collection-roles.component';
 import { CollectionSourceComponent } from './collection-source/collection-source.component';
 import { CollectionCurateComponent } from './collection-curate/collection-curate.component';
+import { CollectionStylesComponent } from './collection-styles/collection-styles.component';
 import { CollectionAuthorizationsComponent } from './collection-authorizations/collection-authorizations.component';
 import { I18nBreadcrumbResolver } from '../../core/breadcrumbs/i18n-breadcrumb.resolver';
 import { ResourcePolicyTargetResolver } from '../../shared/resource-policies/resolvers/resource-policy-target.resolver';
@@ -13,6 +14,7 @@ import { ResourcePolicyCreateComponent } from '../../shared/resource-policies/cr
 import { ResourcePolicyResolver } from '../../shared/resource-policies/resolvers/resource-policy.resolver';
 import { ResourcePolicyEditComponent } from '../../shared/resource-policies/edit/resource-policy-edit.component';
 import { CollectionAdministratorGuard } from '../../core/data/feature-authorization/feature-authorization-guard/collection-administrator.guard';
+import { SiteAdministratorGuard } from '../../core/data/feature-authorization/feature-authorization-guard/site-administrator.guard';
 
 /**
  * Routing module that handles the routing for the Edit Collection page administrator functionality
@@ -94,6 +96,12 @@ import { CollectionAdministratorGuard } from '../../core/data/feature-authorizat
             path: 'mapper',
             component: CollectionItemMapperComponent,
             data: { title: 'collection.edit.tabs.item-mapper.title', hideReturnButton: true, showBreadcrumbs: true }
+          },
+	  {
+            path: 'styles',
+            component: CollectionStylesComponent,
+            data: { title: 'collection.edit.tabs.styles', showBreadcrumbs: true },
+            canActivate: [SiteAdministratorGuard],
           },
         ]
       }

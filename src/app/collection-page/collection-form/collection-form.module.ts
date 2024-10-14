@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 
 import { CollectionFormComponent } from './collection-form.component';
+import { CollectionStylesFormComponent } from './collection-form.styles';
 import { SharedModule } from '../../shared/shared.module';
 import { ComcolModule } from '../../shared/comcol/comcol.module';
 import { FormModule } from '../../shared/form/form.module';
@@ -13,9 +14,11 @@ import { FormModule } from '../../shared/form/form.module';
   ],
   declarations: [
     CollectionFormComponent,
+    CollectionStylesFormComponent,
   ],
   exports: [
-    CollectionFormComponent
+    CollectionFormComponent,
+    CollectionStylesFormComponent,
   ]
 })
 export class CollectionFormModule {
