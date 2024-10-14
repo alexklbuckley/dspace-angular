@@ -16,6 +16,7 @@ import { StatisticsModule } from '../statistics/statistics.module';
 import { CollectionFormModule } from './collection-form/collection-form.module';
 import { ThemedCollectionPageComponent } from './themed-collection-page.component';
 import { ComcolModule } from '../shared/comcol/comcol.module';
+import { CollectionHomePageComponent } from './collection-home/collection-home-page.component';
 
 @NgModule({
   imports: [
@@ -34,7 +35,8 @@ import { ComcolModule } from '../shared/comcol/comcol.module';
     DeleteCollectionPageComponent,
     EditItemTemplatePageComponent,
     ThemedEditItemTemplatePageComponent,
-    CollectionItemMapperComponent
+    CollectionItemMapperComponent,
+    CollectionHomePageComponent
   ],
   providers: [
     SearchService,

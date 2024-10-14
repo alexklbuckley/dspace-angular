@@ -1,59 +1,36 @@
-import {
-  AsyncPipe,
-  NgIf,
-} from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  SecurityContext,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, SecurityContext } from '@angular/core';
 import { DomSanitizer} from '@angular/platform-browser';
-import {
-  ActivatedRoute,
-  Router,
-  RouterOutlet,
-} from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
-import {
-  filter,
-  map,
-  mergeMap,
-  take,
-} from 'rxjs/operators';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject, combineLatest as observableCombineLatest, Observable, Subject } from 'rxjs';
+import { filter, map, mergeMap, startWith, switchMap, take } from 'rxjs/operators';
+import { PaginatedSearchOptions } from '../../shared/search/models/paginated-search-options.model';
+import { SearchService } from '../../core/shared/search/search.service';
+import { SortDirection, SortOptions } from '../../core/cache/models/sort-options.model';
+import { CollectionDataService } from '../../core/data/collection-data.service';
+import { PaginatedList } from '../../core/data/paginated-list.model';
+import { RemoteData } from '../../core/data/remote-data';
+import { Bitstream } from '../../core/shared/bitstream.model';
 
+import { Collection } from '../../core/shared/collection.model';
+import { DSpaceObjectType } from '../../core/shared/dspace-object-type.model';
+import { Item } from '../../core/shared/item.model';
+import {
+  getAllSucceededRemoteDataPayload,
+  getFirstSucceededRemoteData,
+  toDSpaceObjectListRD
+} from '../../core/shared/operators';
+
+import { fadeIn, fadeInOut } from '../../shared/animations/fade';
+import { hasValue, isNotEmpty } from '../../shared/empty.util';
+import { PaginationComponentOptions } from '../../shared/pagination/pagination-component-options.model';
 import { AuthService } from '../../core/auth/auth.service';
-import { DSONameService } from '../../core/breadcrumbs/dso-name.service';
-import { SortOptions } from '../../core/cache/models/sort-options.model';
+import { PaginationService } from '../../core/pagination/pagination.service';
 import { AuthorizationDataService } from '../../core/data/feature-authorization/authorization-data.service';
 import { FeatureID } from '../../core/data/feature-authorization/feature-id';
-import { RemoteData } from '../../core/data/remote-data';
-import { redirectOn4xx } from '../../core/shared/authorized.operators';
-import { Bitstream } from '../../core/shared/bitstream.model';
-import { Collection } from '../../core/shared/collection.model';
-import { getAllSucceededRemoteDataPayload } from '../../core/shared/operators';
-import {
-  fadeIn,
-  fadeInOut,
-} from '../../shared/animations/fade';
-import { ThemedComcolPageBrowseByComponent } from '../../shared/comcol/comcol-page-browse-by/themed-comcol-page-browse-by.component';
-import { ThemedComcolPageContentComponent } from '../../shared/comcol/comcol-page-content/themed-comcol-page-content.component';
-import { ThemedComcolPageHandleComponent } from '../../shared/comcol/comcol-page-handle/themed-comcol-page-handle.component';
-import { ComcolPageHeaderComponent } from '../../shared/comcol/comcol-page-header/comcol-page-header.component';
-import { ComcolPageLogoComponent } from '../../shared/comcol/comcol-page-logo/comcol-page-logo.component';
-import { DsoEditMenuComponent } from '../../shared/dso-page/dso-edit-menu/dso-edit-menu.component';
-import {
-  hasValue,
-  isNotEmpty,
-} from '../../shared/empty.util';
-import { ErrorComponent } from '../../shared/error/error.component';
-import { ThemedLoadingComponent } from '../../shared/loading/themed-loading.component';
-import { ObjectCollectionComponent } from '../../shared/object-collection/object-collection.component';
-import { PaginationComponentOptions } from '../../shared/pagination/pagination-component-options.model';
-import { VarDirective } from '../../shared/utils/var.directive';
-import { ViewTrackerComponent } from '../../statistics/angulartics/dspace/view-tracker.component';
 import { getCollectionPageRoute } from '../collection-page-routing-paths';
+import { redirectOn4xx } from '../../core/shared/authorized.operators';
+import { BROWSE_LINKS_TO_FOLLOW } from '../../core/browse/browse.service';
+
 
 @Component({
   selector: 'ds-base-collection-home-page',
@@ -64,24 +41,6 @@ import { getCollectionPageRoute } from '../collection-page-routing-paths';
     fadeIn,
     fadeInOut,
   ],
-  imports: [
-    ThemedComcolPageContentComponent,
-    ErrorComponent,
-    NgIf,
-    ThemedLoadingComponent,
-    TranslateModule,
-    ViewTrackerComponent,
-    VarDirective,
-    AsyncPipe,
-    ComcolPageHeaderComponent,
-    ComcolPageLogoComponent,
-    ThemedComcolPageHandleComponent,
-    DsoEditMenuComponent,
-    ThemedComcolPageBrowseByComponent,
-    ObjectCollectionComponent,
-    RouterOutlet,
-  ],
-  standalone: true,
 })
 export class CollectionHomePageComponent implements OnInit {
   collectionRD$: Observable<RemoteData<Collection>>;
@@ -104,7 +63,6 @@ export class CollectionHomePageComponent implements OnInit {
     protected router: Router,
     protected authService: AuthService,
     protected authorizationDataService: AuthorizationDataService,
-    public dsoNameService: DSONameService,
     protected sanitizer: DomSanitizer,
   ) {
   }

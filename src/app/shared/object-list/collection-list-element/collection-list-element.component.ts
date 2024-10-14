@@ -32,7 +32,7 @@ export class CollectionListElementComponent extends AbstractListableElementCompo
     @Inject(APP_CONFIG) protected appConfig: AppConfig,
     public dsoNameService: DSONameService,
   ) {
-    super(dsoNameService);
+    super();
   }
 
   ngOnInit(): void {

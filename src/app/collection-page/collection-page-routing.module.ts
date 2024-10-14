@@ -15,12 +15,14 @@ import { I18nBreadcrumbResolver } from '../core/breadcrumbs/i18n-breadcrumb.reso
 import {
   ITEMTEMPLATE_PATH,
   COLLECTION_EDIT_PATH,
-  COLLECTION_CREATE_PATH
+  COLLECTION_CREATE_PATH,
+  COLLECTION_HOME_PATH,
 } from './collection-page-routing-paths';
 import { CollectionPageAdministratorGuard } from './collection-page-administrator.guard';
 import { LinkMenuItemModel } from '../shared/menu/menu-item/models/link.model';
 import { ThemedCollectionPageComponent } from './themed-collection-page.component';
 import { MenuItemType } from '../shared/menu/menu-item-type.model';
+import { CollectionHomePageComponent } from './collection-home/collection-home-page.component';
 
 @NgModule({
   imports: [
@@ -59,6 +61,10 @@ import { MenuItemType } from '../shared/menu/menu-item-type.model';
               breadcrumb: I18nBreadcrumbResolver
             },
             data: { title: 'collection.edit.template.title', breadcrumbKey: 'collection.edit.template' }
+          },
+	  {
+            path: COLLECTION_HOME_PATH,
+            component: CollectionHomePageComponent,
           },
           {
             path: '',
