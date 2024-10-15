@@ -1,0 +1,16 @@
+<div class="breadcrumb" style="display:flex;gap:50px">
+  <a href="/">Home</a>
+  <a href="#">Browse</a>
+  <div id="search-navbar-container" [title]="'nav.search' | translate">
+    <div class="d-inline-block position-relative">
+      <form autocomplete="on">
+        <input #testalex [attr.aria-label]="('nav.search' | translate)" name="query"
+          formControlName="query" type="text"
+          class="d-inline-block bg-transparent position-absolute form-control dropdown-menu-right p-1" [attr.data-test]="'header-search-box' | dsBrowserOnly">
+          <a class="submit-icon">
+            <em class="fas fa-search fa-lg fa-fw"></em>
+          </a>
+      </form>
+    </div>
+  </div>
+</div>
