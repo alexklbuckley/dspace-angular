@@ -1,0 +1,28 @@
+#showcase_item_authoranddate {
+  display: flex;
+  gap: 30px;
+}
+#showcase_item_additionalinfo {
+  display: flex;
+  gap: 10px;
+}
+
+#showcase_item_authoranddate > #showcase_item_author {
+  display: inline-block;
+}
+
+#showcase_item_authoranddate > #showcase_item_date {
+  display: inline-block;
+}
+
+.abstract-collapsible {
+  padding-left: 0;
+  width: 100%;
+  position: relative;
+  .toggle {
+    width: 100%;
+  }
+}
+
+
+

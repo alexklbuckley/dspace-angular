@@ -1,0 +1,76 @@
+<div class="row" *ngIf="iiifEnabled">
+    <div class="col-12">
+      <ds-mirador-viewer id="iiif-viewer"
+                     [object]="object"
+                     [searchable]="iiifSearchEnabled"
+                     [query]="iiifQuery$ | async">
+      </ds-mirador-viewer>
+    </div>
+  </div>
+  <div class="d-flex flex-row">
+    <h2 class="item-page-title-field mr-auto">
+        <ds-metadata-values [mdValues]="object?.allMetadata(['dc.title'])"></ds-metadata-values>
+      </h2>
+    <div class="pl-2 space-children-mr">
+      <ds-dso-page-version-button (newVersionEvent)="onCreateNewVersion()" [dso]="object"
+                                  [tooltipMsgCreate]="'item.page.version.create'"
+                                  [tooltipMsgHasDraft]="'item.page.version.hasDraft'"></ds-dso-page-version-button>
+      <ds-dso-page-edit-button [pageRoute]="itemPageRoute" [dso]="object" [tooltipMsg]="'item.page.edit'"></ds-dso-page-edit-button>
+    </div>
+  </div>
+  <div id="showcase_item_authoranddate">
+      <div class="showcase_item_author">
+          <ds-metadata-representation-list class="ds-item-page-mixed-author-field"
+            [parentItem]="object"
+            [itemType]="'Person'"
+            [metadataFields]="['dc.contributor.author', 'dc.creator']"
+            [label]="'relationships.isAuthorOf' | translate">
+          </ds-metadata-representation-list>
+      </div>
+      <div class="showcase_item_date">
+          <ds-item-page-date-field [item]="object"></ds-item-page-date-field>
+      </div>
+  </div>
+  <div class="row" id="showcase_item_thumbnail">
+    <div class="col-xs-12 col-md-4">
+      <ng-container *ngIf="!mediaViewer.image">
+        <ds-metadata-field-wrapper [hideIfNoTextContent]="false">
+          <ds-thumbnail [thumbnail]="object?.thumbnail | async"></ds-thumbnail>
+        </ds-metadata-field-wrapper>
+      </ng-container>
+      <ng-container *ngIf="mediaViewer.image">
+        <ds-media-viewer [item]="object" [videoOptions]="mediaViewer.video"></ds-media-viewer>
+      </ng-container>
+    </div>
+    <div class="col-xs-12 col-md-6">
+      <div class="abstract-collapsible" id="showcase_item_abstract">
+        <ds-item-page-abstract-field [item]="object"></ds-item-page-abstract-field>
+      </div>
+      <div id="showcase_item_keywords">
+          <h5>Showcase specific keywords</h5>
+	  <ds-generic-item-page-field [item]="object"
+            [fields]="['aut.subject.showcase']">
+          </ds-generic-item-page-field>
+      </div>
+    </div>
+    <div id="showcase_item_additionalinfo">
+        <div id="showcase_item_files">
+            <ds-themed-item-page-file-section [item]="object"></ds-themed-item-page-file-section>
+        </div>
+        <div id="showcase_item_supervisors">
+	    <h5>Supervisors</h5>
+              <ds-metadata-representation-list class="ds-item-page-mixed-author-field"
+                [parentItem]="object"
+                [itemType]="'Person'"
+                [metadataFields]="['aut.researcher', 'dc.contributor.advisor']">
+              </ds-metadata-representation-list>
+        </div>
+        <div id="showcase_item_degree">
+	    <h5>Degree</h5>
+	    <ds-generic-item-page-field [item]="object"
+              [fields]="['thesis.degree.name']"
+              [label]="'item.page.thesis.name'">
+            </ds-generic-item-page-field>
+        </div>
+    </div>
+  </div>
