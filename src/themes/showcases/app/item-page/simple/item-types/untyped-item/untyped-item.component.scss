@@ -1,0 +1,28 @@
+.authordate {
+  display: flex;
+  gap: 10px;
+}
+.additionalinfo {
+  display: flex;
+  gap: 10px;
+}
+
+.authordate > .author {
+  display: inline-block;
+}
+
+.authordate > .date {
+  display: inline-block;
+}
+
+                    .abstract-collapsible {
+                        padding-left: 0;
+                        width: 100%;
+                        position: relative;
+                        .toggle {
+                          width: 100%;
+                        }
+                        }
+
+
+
