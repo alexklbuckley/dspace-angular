@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" id="showcase_home">
   <div class="collection-page"
        *ngVar="(collectionRD$ | async) as collectionRD">
     <div *ngIf="collectionRD?.hasSucceeded" @fadeInOut>
@@ -6,55 +6,47 @@
 	<ds-view-tracker [object]="collection"></ds-view-tracker> 
         <div class="d-flex flex-row border-bottom mb-4 pb-4">
           <header class="comcol-header mr-auto">
-            <!-- Collection Name -->
-            <ds-comcol-page-header
-                [name]="collection.name">
-            </ds-comcol-page-header>
-            <!-- header text -->
-            <ds-comcol-page-content
-                [innerHTML]="sanitizeCustomHeaderText(collection.customHeaderText)">
-            </ds-comcol-page-content>
-	    <!-- intro text -->
-            <ds-comcol-page-content
-                [innerHTML]="sanitizeCustomIntrotext(collection.customHomePageIntroText)">
-            </ds-comcol-page-content>
-	    <!-- Collection logo -->
-            <ds-comcol-page-logo *ngIf="logoRD$"
-                                 [logo]="(logoRD$ | async)?.payload"
-                                 [alternateText]="'collection.logo' | translate">
-            </ds-comcol-page-logo>
-            <!-- News -->
-            <ds-comcol-page-content
-                [content]="collection.sidebarText"
-                [hasInnerHtml]="true"
-                [title]="'collection.page.news'">
-            </ds-comcol-page-content>
+            <div id="showcase_home_intro">
+	      <!-- intro text -->
+              <ds-comcol-page-content
+                  [innerHTML]="sanitizeCustomIntrotext(collection.customHomePageIntroText)">
+              </ds-comcol-page-content>
+            </div>
+            <div id="showcase_home_searchandbrowse" style="margin-top:20px;display:flex;gap:100px;">
+              <div id="showcase_home_search" style="padding-top:3%;">
+                <ds-search-form [inPlaceSearch]="false" [searchPlaceholder]="'home.search-form.placeholder' | translate" [scope]="collection.uuid" class="homePageSearch"></ds-search-form>
+	      </div>
+	      <div id="showcase_home_browse">
+                <!-- Browse-By Links -->
+                <ds-themed-comcol-page-browse-by
+                  [id]="collection.id"
+                  [contentType]="collection.type">
+                </ds-themed-comcol-page-browse-by>
+	      </div>
+            </div>
+	  <div id="showcase_home_featured" style="margin-top:30px;margin-bottom:30px;display:flex;gap:400px">
+	    <div id="showcase_home_featured_img">
+	      <!-- Collection logo -->
+              <ds-comcol-page-logo *ngIf="logoRD$"
+                [logo]="(logoRD$ | async)?.payload"
+                [alternateText]="'collection.logo' | translate">
+              </ds-comcol-page-logo>
+	    </div>
+	    <div id="showcase_home_featured_text">
+	      <div id="showcase_home_featured_heading">
+                <h2>Featured item, customisable by showcase owner</h2>
+              </div>
+	      <div id="showcase_home_featured_paragraph">
+		<p>filler text filler text filler text filler text filler text filler text filler text filler text filler text filler text filler text filler text filler text filler text filler text filler text filler text filler text filler text filler text filler text filler text filler text filler text filler text filler text</p>
+              </div>
+	      <div id="showcase_home_featured_buttons" style="display:flex;gap:10px;">
+		<button type="button" style="background-color:black;color:white;">Button</button> 
+		<button type="button">Click Me!</button> 
+              </div>
+            </div>
+          </div>
           </header>
         </div>
-        <section class="comcol-page-browse-section">
-          <!-- Browse-By Links -->
-          <ds-comcol-page-browse-by
-              [id]="collection.id"
-              [contentType]="collection.type">
-          </ds-comcol-page-browse-by>
-
-          <router-outlet></router-outlet>
-        </section>
-        <footer *ngIf="(collection.copyrightText || collection.customOwnerNameText || collection.customFooterText)" class="border-top my-5 pt-4">
-          <!-- owner name -->
-          <ds-comcol-page-content
-              [innerHTML]="sanitizeOwnerNameText(collection.customOwnerNameText)">
-          </ds-comcol-page-content>
-	  <!-- footer -->
-          <ds-comcol-page-content
-              [innerHTML]="sanitizeCustomFootertext(collection.customFooterText)">
-          </ds-comcol-page-content>
-          <!-- Copyright -->
-          <ds-comcol-page-content
-              [content]="collection.copyrightText"
-              [hasInnerHtml]="true">
-          </ds-comcol-page-content>
-        </footer>
       </div>
     </div>
     <ds-error *ngIf="collectionRD?.hasFailed"
