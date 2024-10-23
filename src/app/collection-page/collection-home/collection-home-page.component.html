@@ -13,8 +13,10 @@
               </ds-comcol-page-content>
             </div>
             <div id="searchandbrowse" style="margin-top:20px;display:flex;gap:100px;">
-              <div id="searchbar">
+              <div id="searchbar" style="padding-top:3%;">
                 <ds-search-form [inPlaceSearch]="false" [searchPlaceholder]="'home.search-form.placeholder' | translate" [scope]="collection.uuid" class="homePageSearch"></ds-search-form>
+	      </div>
+	      <div>
                 <!-- Browse-By Links -->
                 <ds-themed-comcol-page-browse-by
                   [id]="collection.id"
