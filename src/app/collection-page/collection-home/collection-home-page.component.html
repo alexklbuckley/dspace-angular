@@ -14,11 +14,13 @@
             </div>
             <div id="searchandbrowse" style="margin-top:20px;display:flex;gap:100px;">
               <div id="searchbar">
-                  <ds-themed-search-navbar></ds-themed-search-navbar>
-              </div>
-              <div id="browse">
-	        <input type="text" placeholder="Browse..">
-              </div>
+                <ds-search-form [inPlaceSearch]="false" [searchPlaceholder]="'home.search-form.placeholder' | translate" [scope]="collection.uuid" class="homePageSearch"></ds-search-form>
+                <!-- Browse-By Links -->
+                <ds-themed-comcol-page-browse-by
+                  [id]="collection.id"
+                  [contentType]="collection.type">
+                </ds-themed-comcol-page-browse-by>
+	      </div>
             </div>
 	  <div id="featureditem" style="margin-top:30px;margin-bottom:30px;display:flex;gap:400px">
 	    <div id="featureditemimage">
