@@ -57,7 +57,11 @@
         </div>
         <div>
 	    <h5>Supervisors</h5>
-	    <p>Insert supervisors here</p>
+              <ds-metadata-representation-list class="ds-item-page-mixed-author-field"
+                [parentItem]="object"
+                [itemType]="'Person'"
+                [metadataFields]="['aut.researcher', 'dc.contributor.advisor']">
+              </ds-metadata-representation-list>
         </div>
         <div>
 	    <h5>Degree</h5>
