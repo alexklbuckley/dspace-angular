@@ -14,6 +14,8 @@ import {
   getFirstSucceededRemoteData,
   getFirstSucceededRemoteDataPayload,
   getRemoteDataPayload,
+  getAllCompletedRemoteData,
+  getPaginatedListPayload
 } from '../../core/shared/operators';
 import { HeadTagConfig, Theme, ThemeConfig, themeFactory } from '../../../config/theme.model';
 import { NO_OP_ACTION_TYPE, NoOpAction } from '../ngrx/no-op.action';
@@ -28,6 +30,10 @@ import { DOCUMENT } from '@angular/common';
 import { getDefaultThemeConfig } from '../../../config/config.util';
 import { BASE_THEME_NAME } from './theme.constants';
 import { CollectionDataService } from 'src/app/core/data/collection-data.service';
+
+import { PaginatedList } from 'src/app/core/data/paginated-list.model';
+import { RouteService } from 'src/app/core/services/route.service';
+import { Collection } from 'src/app/core/shared/collection.model';
 
 export const themeStateSelector = createFeatureSelector<ThemeState>('theme');
 
@@ -64,6 +70,7 @@ export class ThemeService {
     @Inject(DOCUMENT) private document: any,
     private collectionService: CollectionDataService,
     private sanitizer: DomSanitizer,
+        public routeService: RouteService,
   ) {
     // Create objects from the theme configs in the environment file
     this.themes = environment.themes.map((themeConfig: ThemeConfig) => themeFactory(themeConfig, injector));
@@ -325,9 +332,20 @@ export class ThemeService {
               // We must be viewing a non Collection Browse page
               // Fetch the owning collection and all mapped collections
               // We need to add the collection.css styling to the <head>
-
               if (hasValue(snapshotWithData.data.dso.payload) && hasValue(snapshotWithData.data.dso.payload._links)) {
-                if (hasValue(snapshotWithData.data.dso.payload._links.mappedCollections) && hasValue(snapshotWithData.data.dso.payload._links.mappedCollections.href)) {
+                if (hasValue(snapshotWithData.data.dso.payload._links.owningCollection) && hasValue(snapshotWithData.data.dso.payload._links.owningCollection.href)) {
+                  // Fetch owning collection
+                  // Apply collection.css styling to the <head>
+                  const OwningCollection =
+                    this.collectionService.findOwningCollectionFor(snapshotWithData.data.dso.payload)
+                      .pipe(getFirstSucceededRemoteDataPayload())
+                      .subscribe((collection) => {
+                        this.addCollectionCSSToHead(collection.cssDisplay);
+
+                      });
+                }
+                
+		if (hasValue(snapshotWithData.data.dso.payload._links.mappedCollections) && hasValue(snapshotWithData.data.dso.payload._links.mappedCollections.href)) {
                   // Fetch all mapped collections
                   // Apply collection.css styling to the <head>
                   const MappedCollections =
@@ -338,18 +356,30 @@ export class ThemeService {
                           this.addCollectionCSSToHead(collection.cssDisplay);
                         });
                       });
-                }
 
-                if (hasValue(snapshotWithData.data.dso.payload._links.owningCollection) && hasValue(snapshotWithData.data.dso.payload._links.owningCollection.href)) {
-                  // Fetch owning collection
-                  // Apply collection.css styling to the <head>
-                  const OwningCollection =
-                    this.collectionService.findOwningCollectionFor(snapshotWithData.data.dso.payload)
-                      .pipe(getFirstSucceededRemoteDataPayload())
-                      .subscribe((collection) => {
-                        this.addCollectionCSSToHead(collection.cssDisplay);
-                      });
-                }
+                      // Fetch all mapped collections
+                      const mapped$: Observable<RemoteData<PaginatedList<DSpaceObject>>> = this.collectionService.findMappedCollectionsFor(snapshotWithData.data.dso.payload);
+                      return mapped$.pipe(
+                        getAllCompletedRemoteData<PaginatedList<Collection>>(),
+                        getAllSucceededRemoteDataPayload(),
+                        getPaginatedListPayload<Collection>(),
+                        map((dsos: DSpaceObject[]) => {
+			  // loop through users history to see what collection they have visited
+			  // and if that collection matches a mapped collection for this item
+                          for (let dso of dsos) {
+                              this.routeService.getHistory().pipe().subscribe((history) => {
+                                  console.log(dso.id);
+                                  const substr = dso.id;
+                                  const regex = new RegExp(substr, 'i');
+                                  const match = history.filter(str => regex.test(str));
+                                  console.log(match);
+                              });
+                          }
+                          const dsoMatch = this.matchThemeToDSOs(dsos, currentRouteUrl);
+                          return this.getActionForMatch(dsoMatch, currentTheme);
+                        })
+                      );
+                };
               }
 
               // Start with the resolved dso and go recursively through its parents until you reach the top-level community
