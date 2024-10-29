@@ -4,7 +4,7 @@ import { Store, createFeatureSelector, createSelector, select } from '@ngrx/stor
 import { BehaviorSubject, EMPTY, Observable, of as observableOf } from 'rxjs';
 import { ThemeState } from './theme.reducer';
 import { SetThemeAction, ThemeActionTypes } from './theme.actions';
-import { expand, filter, map, switchMap, take, toArray } from 'rxjs/operators';
+import { expand, filter, map, startWith, switchMap, take, toArray } from 'rxjs/operators';
 import { hasNoValue, hasValue, isNotEmpty } from '../empty.util';
 import { RemoteData } from '../../core/data/remote-data';
 import { DSpaceObject } from '../../core/shared/dspace-object.model';
@@ -34,6 +34,7 @@ import { CollectionDataService } from 'src/app/core/data/collection-data.service
 import { PaginatedList } from 'src/app/core/data/paginated-list.model';
 import { RouteService } from 'src/app/core/services/route.service';
 import { Collection } from 'src/app/core/shared/collection.model';
+import { FindListOptions } from 'src/app/core/data/find-list-options.model';
 
 export const themeStateSelector = createFeatureSelector<ThemeState>('theme');
 
@@ -341,21 +342,28 @@ export class ThemeService {
                       .pipe(getFirstSucceededRemoteDataPayload())
                       .subscribe((collection) => {
                         this.addCollectionCSSToHead(collection.cssDisplay);
-
                       });
                 }
                 
 		if (hasValue(snapshotWithData.data.dso.payload._links.mappedCollections) && hasValue(snapshotWithData.data.dso.payload._links.mappedCollections.href)) {
                   // Fetch all mapped collections
                   // Apply collection.css styling to the <head>
-                  const MappedCollections =
-                    this.collectionService.findMappedCollectionsFor(snapshotWithData.data.dso.payload)
-                      .pipe(getAllSucceededRemoteDataPayload())
-                      .subscribe((collections) => {
-                        collections.page.forEach(function (collection) {
-                          this.addCollectionCSSToHead(collection.cssDisplay);
-                        });
-                      });
+                  const mappedCollections$: Observable<Collection[]> = this.collectionService.findMappedCollectionsFor(snapshotWithData.data.dso.payload, Object.assign(new FindListOptions(), { })).pipe(
+                    getAllCompletedRemoteData<PaginatedList<Collection>>(),
+                    getAllSucceededRemoteDataPayload(),
+                    getPaginatedListPayload<Collection>(),
+                    startWith([]),
+                  ) as Observable<Collection[]>;
+
+                  mappedCollections$.subscribe((collections: Collection[]) => {
+                    collections.forEach( (collection) => {
+		      if (!hasValue(collection.cssDisplay)) {
+		        return;
+		      } else {
+                        this.addCollectionCSSToHead(collection.cssDisplay);
+		      }
+                    });
+                  });
 
                       // Fetch all mapped collections
                       const mapped$: Observable<RemoteData<PaginatedList<DSpaceObject>>> = this.collectionService.findMappedCollectionsFor(snapshotWithData.data.dso.payload);
@@ -366,15 +374,6 @@ export class ThemeService {
                         map((dsos: DSpaceObject[]) => {
 			  // loop through users history to see what collection they have visited
 			  // and if that collection matches a mapped collection for this item
-                          for (let dso of dsos) {
-                              this.routeService.getHistory().pipe().subscribe((history) => {
-                                  console.log(dso.id);
-                                  const substr = dso.id;
-                                  const regex = new RegExp(substr, 'i');
-                                  const match = history.filter(str => regex.test(str));
-                                  console.log(match);
-                              });
-                          }
                           const dsoMatch = this.matchThemeToDSOs(dsos, currentRouteUrl);
                           return this.getActionForMatch(dsoMatch, currentTheme);
                         })
@@ -394,7 +393,15 @@ export class ThemeService {
           }
           if (hasValue(activatedRouteSnapshot.queryParams) && hasValue(activatedRouteSnapshot.queryParams.scope)) {
             const dsoFromScope$: Observable<RemoteData<DSpaceObject>> = this.dSpaceObjectDataService.findById(activatedRouteSnapshot.queryParams.scope);
-            // Start with the resolved dso and go recursively through its parents until you reach the top-level community
+	    this.collectionService.findById(activatedRouteSnapshot.queryParams.scope)
+              .pipe(getFirstSucceededRemoteDataPayload())
+              .subscribe((collection) => {
+		if (hasValue(collection.cssDisplay)) {
+                  this.addCollectionCSSToHead(collection.cssDisplay);
+		}
+              });
+
+	    // Start with the resolved dso and go recursively through its parents until you reach the top-level community
             return dsoFromScope$.pipe(
               getFirstSucceededRemoteData(),
               getRemoteDataPayload(),
@@ -527,7 +534,7 @@ export class ThemeService {
   /**
    * Add collection.css to <head>
    */
-  private addCollectionCSSToHead(css: string) {
+  addCollectionCSSToHead(css: string) {
     // Clear collectionCSS style tag
     if (hasValue(document.getElementById('collectionCSS'))) {
       document.getElementById('collectionCSS').remove();
