@@ -255,6 +255,7 @@ export class DefaultAppConfig implements AppConfig {
     },
     routeThrough: {
       collectionHomePage: false,
+   // uuid: 
     },
   };
 

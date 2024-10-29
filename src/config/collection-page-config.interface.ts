@@ -6,5 +6,6 @@ export interface CollectionPageConfig extends Config {
   };
   routeThrough: {
     collectionHomePage: boolean;
+    uuid?: string;
   }
 }

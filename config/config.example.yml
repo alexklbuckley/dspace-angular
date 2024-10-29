@@ -215,6 +215,7 @@ collection:
   # Routing config for optional collection home page
   routeThrough:
     collectionHomePage: false
+    uuid:
 
 # Theme Config
 themes:

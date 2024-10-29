@@ -1,9 +1,11 @@
-<a *ngIf="(linkType != linkTypes.None) && (useCollectionHomePage !== true)" [target]="(linkType == linkTypes.ExternalLink) ? '_blank' : '_self'" rel="noopener noreferrer" [routerLink]="['/collections/' + object.id]" class="lead">
+<a *ngIf="(linkType != linkTypes.None) && (useCollectionHomePage === true) && (useCollectionHomePageUUID === object.uuid); else noHomeLink" [target]="(linkType == linkTypes.ExternalLink) ? '_blank' : '_self'" rel="noopener noreferrer" [routerLink]="['/collections/' + object.id + '/home']" class="lead">
     {{object.name}}
 </a>
-<a *ngIf="(linkType != linkTypes.None) && (useCollectionHomePage === true)" [target]="(linkType == linkTypes.ExternalLink) ? '_blank' : '_self'" rel="noopener noreferrer" [routerLink]="['/collections/' + object.id + '/home']" class="lead">
+<ng-template #noHomeLink>
+<a *ngIf="(linkType != linkTypes.None)" [target]="(linkType == linkTypes.ExternalLink) ? '_blank' : '_self'" rel="noopener noreferrer" [routerLink]="['/collections/' + object.id]" class="lead">
     {{object.name}}
 </a>
+</ng-template>
 <span *ngIf="linkType == linkTypes.None" class="lead">
     {{object.name}}
 </span>

@@ -237,6 +237,7 @@ export const environment: BuildConfig = {
     },
     routeThrough: {
       collectionHomePage: false,
+      uuid:
     },
   },
   themes: [

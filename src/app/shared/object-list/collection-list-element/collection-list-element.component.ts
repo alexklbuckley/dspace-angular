@@ -27,6 +27,7 @@ import { AbstractListableElementComponent } from '../../object-collection/shared
 export class CollectionListElementComponent extends AbstractListableElementComponent<Collection> implements OnInit {
 
   useCollectionHomePage: boolean;
+  useCollectionHomePageUUID: string
 
   constructor(
     @Inject(APP_CONFIG) protected appConfig: AppConfig,
@@ -37,5 +38,6 @@ export class CollectionListElementComponent extends AbstractListableElementCompo
 
   ngOnInit(): void {
     this.useCollectionHomePage = this.appConfig.collection.routeThrough.collectionHomePage;
+    this.useCollectionHomePageUUID = this.appConfig.collection.routeThrough.uuid;
   }
 }
