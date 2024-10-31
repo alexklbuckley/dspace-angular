@@ -16,4 +16,12 @@ import { ExpandableNavbarSectionComponent } from '../../../../app/navbar/expanda
   animations: [slideMobileNav]
 })
 export class NavbarComponent extends BaseComponent {
+  homepage: boolean = false;
+  checkpage() { 
+    if (this.route.snapshot['_routerState'].url.split('/').pop() == "home") {
+      return this.homepage = true;
+    } else {
+      return false;
+    }
+  }
 }

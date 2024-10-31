@@ -5,8 +5,8 @@ import { BrowseByMetadataPageComponent as BaseComponent } from '../../../../../a
   selector: 'ds-browse-by-metadata-page',
   // styleUrls: ['./browse-by-metadata-page.component.scss'],
   styleUrls: ['../../../../../app/browse-by/browse-by-metadata-page/browse-by-metadata-page.component.scss'],
-  // templateUrl: './browse-by-metadata-page.component.html'
-  templateUrl: '../../../../../app/browse-by/browse-by-metadata-page/browse-by-metadata-page.component.html'
+  templateUrl: './browse-by-metadata-page.component.html'
+  // templateUrl: '../../../../../app/browse-by/browse-by-metadata-page/browse-by-metadata-page.component.html'
 })
 
 /**

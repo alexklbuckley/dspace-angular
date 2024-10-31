@@ -1,12 +1,44 @@
-#showcase_home_intro {
-  text-align: left;
-  max-width: 500px;
-  font-size: 25px;
+.showcase_home {
+ width: 100%;
+ display: flex;
+ flex-wrap: wrap;
+}
+.showcase_home_intro {
+ flex: 75%;
+ text-align: left;
+ font-size: 25px;
+}
+.showcase_home_logo {
+ flex: 25%;
 }
 
-#showcase_home_searchandbrowse {
-  margin-top:20px;
-  display:flex;
-  gap:100px;
+.showcase_home_searchandbrowse {
+ width: 100%;
+ display: flex;
+ flex-wrap: wrap;
+}
+.showcase_home_search {
+ flex: 50%;
+ padding-right: 10%;
+}
+.showcase_home_browse {
+ padding-left: 10%;
+ flex: 50%;
 }
 
+
+/*Layout changes on screen width 700px*/
+@media(max-width: 700px) {
+  .showcase_home_item {
+    flex: 1 0 100%;
+  }
+  .showcase_home_searchandbrowse_item {
+    flex: 1 0 100%;
+  }
+  .showcase_home_search {
+    padding-right: 0%;
+  }
+  .showcase_home_browse {
+    padding-left: 0%;
+  }
+}

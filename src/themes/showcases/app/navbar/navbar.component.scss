@@ -1,0 +1,22 @@
+#showcase_navbar {
+ display: flex;
+ gap: 20px;
+ text-align: center;
+ background-color: lightgrey;
+ padding-left: 20%;
+}
+
+#showcase_navbar_home {
+ margin-top: 1.5%;
+}
+
+#showcase_navbar_browse, #showcase_navbar_search {
+ margin-top: 1%;
+}
+
+/*Layout changes on screen width 700px*/
+@media(max-width: 700px) {
+ .showcase_navbar_elements {
+   flex: 1 0 100%;
+ }
+}

@@ -1,18 +1,12 @@
-<div id="showcase_navbar"
-	style="
-	  display:flex;
-	  gap: 20px;
-	  align-items: center;
-	  background-color:lightgrey;
-	">
-  <div class="showcase_navbar_elements" id="showcase_navbar_home" style="margin-left:10px;">
+<ng-container *ngIf="checkpage() == false">
+<div id="showcase_navbar">
+  <div class="showcase_navbar_elements" id="showcase_navbar_home">
     <a href="/">Home</a>
   </div>
 
   <div class="showcase_navbar_elements" id="showcase_navbar_browse">
     <nav [ngClass]="{'open': !(menuCollapsed | async)}" [@slideMobileNav]="!(windowService.isXsOrSm() | async) ? 'default' : ((menuCollapsed | async) ? 'collapsed' : 'expanded')"
       class="navbar navbar-light navbar-expand-md p-md-0 navbar-container" role="navigation" [attr.aria-label]="'nav.main.description' | translate">
-      <!-- TODO remove navbar-container class when https://github.com/twbs/bootstrap/issues/24726 is fixed -->
       <div class="container">
         <div class="reset-padding-md w-100">
           <div id="collapsingNav">
@@ -29,7 +23,8 @@
     </nav>
   </div>
 
-  <div class="showcase_navbar_elements" id="showcase_navbar_search" style="margin-top:17px;">
+  <div class="showcase_navbar_elements" id="showcase_navbar_search">
     <ds-search-form [inPlaceSearch]="false" [searchPlaceholder]="'home.search-form.placeholder' | translate"></ds-search-form>
   </div>
 </div>
+</ng-container>
