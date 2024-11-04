@@ -15,6 +15,7 @@ import { SearchService } from '../core/shared/search/search.service';
 import { StatisticsModule } from '../statistics/statistics.module';
 import { CollectionFormModule } from './collection-form/collection-form.module';
 import { ThemedCollectionPageComponent } from './themed-collection-page.component';
+import { ThemedCollectionHomePageComponent } from './collection-home/themed-collection-home-page.component';
 import { ComcolModule } from '../shared/comcol/comcol.module';
 import { CollectionHomePageComponent } from './collection-home/collection-home-page.component';
 
@@ -36,7 +37,8 @@ import { CollectionHomePageComponent } from './collection-home/collection-home-p
     EditItemTemplatePageComponent,
     ThemedEditItemTemplatePageComponent,
     CollectionItemMapperComponent,
-    CollectionHomePageComponent
+    ThemedCollectionHomePageComponent,
+    CollectionHomePageComponent,
   ],
   providers: [
     SearchService,

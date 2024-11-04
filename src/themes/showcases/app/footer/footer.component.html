@@ -1,14 +1,15 @@
-<footer id="showcase_footer" style="display:flex;gap:50px;border:white;">
-    <div id="showcase_footer_owner" style="margin-left:10px;">
-	<p style="font-size:25px;">Showcase Owner</p>
+<footer id="showcase_footer">
+    <div class="showcase_footer_elements" id="showcase_footer_owner">
+	<ng-container *ngIf="showcaseCollection; else placeholderShowcaseOwner">
+	  <p>{{ this.collectionService.sanitizeCustomText(showcaseCollection.customOwnerNameText) }}</p>
+	</ng-container>
+	<ng-template #placeholderShowcaseOwner>
+          <p>Showcase Owner</p>
+        </ng-template>
     </div>
-    <div id="showcase_footer_info" style="margin-left: auto; margin-right: 10px;">
-        <div id="showcase_footer_contact" style="display:flex;gap:25px;">
-            <a>Contact</a>
-        </div>
-        <div id="showcase_footer_tagline">
-            Tuwhera showcases are an initiative of Te Mātāpuna Library and Learning Services, AUT
-	    <a> Find out more</a>
-        </div>
+    <div class="showcase_footer_elements" id="showcase_footer_info">
+      <div id="showcase_footer_contact">
+        <a>Contact</a>
+      </div>
     </div>
 </footer>

@@ -1,30 +1,29 @@
-<ng-container *ngIf="checkpage() == false">
+<ng-container *ngIf="showcaseNavNeeded">
 <div id="showcase_navbar">
   <div class="showcase_navbar_elements" id="showcase_navbar_home">
-    <a href="/">Home</a>
+    <ng-container *ngIf="showcaseCollection; else unscopedHomeLink">
+      <a [routerLink]="['/collections/' + showcaseCollection.id + '/home']">Home</a>
+    </ng-container>
+    <ng-template #unscopedHomeLink>
+      <a href="/">Home</a>
+    </ng-template>
   </div>
 
   <div class="showcase_navbar_elements" id="showcase_navbar_browse">
-    <nav [ngClass]="{'open': !(menuCollapsed | async)}" [@slideMobileNav]="!(windowService.isXsOrSm() | async) ? 'default' : ((menuCollapsed | async) ? 'collapsed' : 'expanded')"
-      class="navbar navbar-light navbar-expand-md p-md-0 navbar-container" role="navigation" [attr.aria-label]="'nav.main.description' | translate">
-      <div class="container">
-        <div class="reset-padding-md w-100">
-          <div id="collapsingNav">
-            <ul class="navbar-nav navbar-navigation mr-auto shadow-none">
-              <ng-container *ngFor="let section of (sections | async); last as isLast">
-	        <div *ngIf="isLast">
-                  <ng-container *ngComponentOutlet="(sectionMap$ | async).get(section.id)?.component; injector: (sectionMap$ | async).get(section.id)?.injector;"></ng-container>
-	        </div>
-              </ng-container>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </nav>
+    <!-- Browse-By Links -->
+<!--    <ds-themed-comcol-page-browse-by
+      [id]="data.id"
+      [contentType]="data.type">
+</ds-themed-comcol-page-browse-by>-->
   </div>
 
   <div class="showcase_navbar_elements" id="showcase_navbar_search">
-    <ds-search-form [inPlaceSearch]="false" [searchPlaceholder]="'home.search-form.placeholder' | translate"></ds-search-form>
+    <ng-container *ngIf="showcaseCollection; else unscopedSearch">
+      <ds-search-form [inPlaceSearch]="false" [searchPlaceholder]="'home.search-form.placeholder' | translate" [scope]="showcaseCollection.id"></ds-search-form>
+    </ng-container>
+    <ng-template #unscopedSearch>
+      <ds-search-form [inPlaceSearch]="false" [searchPlaceholder]="'home.search-form.placeholder' | translate"></ds-search-form>
+    </ng-template>
   </div>
 </div>
 </ng-container>

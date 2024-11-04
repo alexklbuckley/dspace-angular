@@ -1,0 +1,58 @@
+<div class="container" id="showcase_home">
+  <div class="collection-page"
+       *ngVar="(collectionRD$ | async) as collectionRD">
+    <div *ngIf="collectionRD?.hasSucceeded" @fadeInOut>
+      <div *ngIf="collectionRD?.payload as collection">
+	<ds-view-tracker [object]="collection"></ds-view-tracker> 
+        <div class="d-flex flex-row mb-4 pb-4">
+          <header class="comcol-header mr-auto">
+            <div class="showcase_home">
+	      <div class="showcase_home_item showcase_home_logo">
+	        <!-- Collection logo -->
+                <ds-comcol-page-logo *ngIf="logoRD$"
+                  [logo]="(logoRD$ | async)?.payload"
+                  [alternateText]="'collection.logo' | translate">
+                </ds-comcol-page-logo>
+	      </div>
+              <div class="showcase_home_item showcase_home_intro">
+	        <!-- intro text -->
+                <ds-comcol-page-content
+                  [innerHTML]="sanitizeCustomText(collection.customHomePageIntroText)">
+                </ds-comcol-page-content>
+              </div>
+	    </div>
+            <div class="showcase_home_searchandbrowse">
+              <div class="showcase_home_searchandbrowse_item showcase_home_search">
+		<h5>Search the {{ collection.name }}</h5>
+                <ds-search-form [inPlaceSearch]="false" [searchPlaceholder]="'home.search-form.placeholder' | translate" [scope]="collection.uuid" class="homePageSearch"></ds-search-form>
+	      </div>
+	      <div class="showcase_home_searchandbrowse_item showcase_home_browse">
+		<h5>Browse the {{ collection.name }}</h5>
+                <!-- Browse-By Links -->
+                <ds-themed-comcol-page-browse-by
+                  [id]="collection.id"
+                  [contentType]="collection.type">
+                </ds-themed-comcol-page-browse-by>
+	      </div>
+            </div>
+	    <div id="showcase_home_news">
+              <!-- News -->
+              <ds-comcol-page-content
+                [content]="collection.sidebarText"
+                [hasInnerHtml]="true">
+              </ds-comcol-page-content>
+            </div>
+          </header>
+        </div>
+      </div>
+    </div>
+    <ds-error *ngIf="collectionRD?.hasFailed"
+              message="{{'error.collection' | translate}}"></ds-error>
+    <ds-loading *ngIf="collectionRD?.isLoading"
+                       message="{{'loading.collection' | translate}}"></ds-loading>
+  </div>
+  <div id="showcase_footer_tagline">
+    Tuwhera showcases are an initiative of Te Mātāpuna Library and Learning Services, AUT
+    <a> Find out more</a>
+  </div>
+</div>

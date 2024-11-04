@@ -1,3 +1,5 @@
+import { SecurityContext } from '@angular/core';
+import { DomSanitizer} from '@angular/platform-browser';
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
@@ -51,6 +53,7 @@ export class CollectionDataService extends ComColDataService<Collection> {
     protected bitstreamDataService: BitstreamDataService,
     protected communityDataService: CommunityDataService,
     protected translate: TranslateService,
+    protected sanitizer: DomSanitizer,
   ) {
     super('collections', requestService, rdbService, objectCache, halService, comparator, notificationsService, bitstreamDataService);
   }
@@ -291,4 +294,9 @@ export class CollectionDataService extends ComColDataService<Collection> {
       take(1),
     );
   }
+
+  public sanitizeCustomText(value) {
+    return this.sanitizer.sanitize(SecurityContext.HTML, value);
+  }
+
 }

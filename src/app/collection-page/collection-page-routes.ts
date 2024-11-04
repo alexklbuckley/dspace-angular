@@ -11,7 +11,6 @@ import { ComcolSearchSectionComponent } from '../shared/comcol/sections/comcol-s
 import { dsoEditMenuResolver } from '../shared/dso-page/dso-edit-menu.resolver';
 import { LinkMenuItemModel } from '../shared/menu/menu-item/models/link.model';
 import { MenuItemType } from '../shared/menu/menu-item-type.model';
-import { CollectionHomePageComponent } from './collection-home/collection-home-page.component';
 import { collectionPageResolver } from './collection-page.resolver';
 import { collectionPageAdministratorGuard } from './collection-page-administrator.guard';
 import {
@@ -26,6 +25,7 @@ import { DeleteCollectionPageComponent } from './delete-collection-page/delete-c
 import { itemTemplatePageResolver } from './edit-item-template-page/item-template-page.resolver';
 import { ThemedEditItemTemplatePageComponent } from './edit-item-template-page/themed-edit-item-template-page.component';
 import { ThemedCollectionPageComponent } from './themed-collection-page.component';
+import { ThemedCollectionHomePageComponent } from './collection-home/themed-collection-home-page.component';
 
 export const ROUTES: Route[] = [
   {
@@ -84,7 +84,7 @@ export const ROUTES: Route[] = [
       },
       {
         path: COLLECTION_HOME_PATH,
-        component: CollectionHomePageComponent,
+        component: ThemedCollectionHomePageComponent,
       },
       {
         path: '',

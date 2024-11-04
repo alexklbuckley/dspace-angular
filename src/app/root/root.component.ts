@@ -52,7 +52,7 @@ export class RootComponent implements OnInit {
     private metadata: MetadataService,
     private angulartics2DSpace: Angulartics2DSpace,
     private authService: AuthService,
-    private router: Router,
+    public router: Router,
     private cssService: CSSVariableService,
     private menuService: MenuService,
     private windowService: HostWindowService

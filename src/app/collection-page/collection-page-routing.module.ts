@@ -22,7 +22,7 @@ import { CollectionPageAdministratorGuard } from './collection-page-administrato
 import { LinkMenuItemModel } from '../shared/menu/menu-item/models/link.model';
 import { ThemedCollectionPageComponent } from './themed-collection-page.component';
 import { MenuItemType } from '../shared/menu/menu-item-type.model';
-import { CollectionHomePageComponent } from './collection-home/collection-home-page.component';
+import { ThemedCollectionHomePageComponent } from './collection-home/themed-collection-home-page.component';
 
 @NgModule({
   imports: [
@@ -64,7 +64,7 @@ import { CollectionHomePageComponent } from './collection-home/collection-home-p
           },
 	  {
             path: COLLECTION_HOME_PATH,
-            component: CollectionHomePageComponent,
+            component: ThemedCollectionHomePageComponent,
           },
           {
             path: '',
