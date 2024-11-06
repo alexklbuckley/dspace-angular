@@ -57,7 +57,7 @@
       <ds-themed-item-page-file-section [item]="object"></ds-themed-item-page-file-section>
       <ds-generic-item-page-field [item]="object"
         [fields]="['dc.type']"
-        [label]="'Item type' | translate ">
+        [label]="'item.page.dc.type' | translate ">
       </ds-generic-item-page-field>
     </div>
     <div class="showcase_item_additionalinfo_item column_2">
@@ -65,21 +65,21 @@
         [parentItem]="object"
         [itemType]="'Person'"
         [metadataFields]="['dc.contributor.advisor']"
-	[label]="'Supervisors' | translate">
+	      [label]="'item.page.advisor' | translate">
       </ds-metadata-representation-list>
       <ds-generic-item-page-field [item]="object"
         [fields]="['aut.relation.journal']"
-        [label]="'Journal title' | translate">
+        [label]="'item.page.journal-title' | translate">
       </ds-generic-item-page-field>
     </div>
     <div class="showcase_item_additionalinfo_item column_3">
       <ds-generic-item-page-field [item]="object"
         [fields]="['thesis.degree.name']"
-        [label]="'Degree name' | translate">
+        [label]="'item.page.thesis.name' | translate">
       </ds-generic-item-page-field>
       <ds-generic-item-page-field [item]="object"
         [fields]="['dc.publisher']"
-        [label]="'Publisher' | translate">
+        [label]="'item.page.publisher' | translate">
       </ds-generic-item-page-field>
       <ds-metadata-field-wrapper [label]="'item.page.doi' | translate">
         <a class="dont-break-out" *ngFor="let mdValue of object?.allMetadata(['dc.identifier.doi']); let last=last;" [href]=" 'https://dx.doi.org/' + mdValue.value">
@@ -91,10 +91,10 @@
   <div>
     <ds-generic-item-page-field [item]="object"
       [fields]="['dc.identifier.citation']"
-      [label]="'Citation' | translate">
+      [label]="'item.page.citation' | translate">
     </ds-generic-item-page-field>
     <ds-generic-item-page-field [item]="object"
       [fields]="['dc.rights']"
-      [label]="'Rights statement' | translate">
+      [label]="'item.page.dc.rights' | translate">
     </ds-generic-item-page-field>
   </div>
