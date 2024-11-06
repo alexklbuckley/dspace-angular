@@ -9,7 +9,12 @@
     </div>
     <div class="showcase_footer_elements" id="showcase_footer_info">
       <div id="showcase_footer_contact">
-        <a>Contact</a>
+	<ng-container *ngIf="showcaseCollection">
+          <div [innerHTML]="this.collectionService.sanitizeCustomText(showcaseCollection.customFooterText)"></div>
+	</ng-container>
       </div>
+    </div>
+    <div id="showcase_footer_auth">
+      <ds-themed-auth-nav-menu></ds-themed-auth-nav-menu>
     </div>
 </footer>

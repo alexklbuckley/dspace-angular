@@ -8,10 +8,9 @@ import { RemoteData } from '../../../../app/core/data/remote-data';
 import { Collection } from '../../../../app/core/shared/collection.model';
 
 @Component({
-  selector: 'ds-footer',
   styleUrls: ['footer.component.scss'],
   // styleUrls: ['../../../../app/footer/footer.component.scss'],
-  templateUrl: './footer.component.html'
+  templateUrl: './footer.component.html',
   //templateUrl: '../../../../app/footer/footer.component.html'
 })
 export class FooterComponent extends BaseComponent implements OnDestroy {
