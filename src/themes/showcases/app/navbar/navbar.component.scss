@@ -25,7 +25,13 @@
   }
 }
 
-/*Layout changes on screen width 700px*/
+/*Layout changes on mobile*/
+@media(max-width: 700px) {
+ #showcase_navbar_search {
+   margin-top: 4%;
+ }
+}
+
 @media(min-width: 700px) {
  #showcase_navbar_search {
    margin-left: auto;
