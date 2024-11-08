@@ -9,14 +9,14 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Observable } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { filter, map, startWith } from 'rxjs/operators';
 
 import { RemoteData } from '../../../../../app/core/data/remote-data';
 import { PageInfo } from '../../../../../app/core/shared/page-info.model';
 import { PaginationComponentOptions } from '../../../../../app/shared/pagination/pagination-component-options.model';
 import { SortDirection, SortOptions } from '../../../../../app/core/cache/models/sort-options.model';
 import { ListableObject } from '../../../../../app/shared/object-collection/shared/listable-object.model';
-import { isEmpty } from '../../../../../app/shared/empty.util';
+import { isNotEmpty } from '../../../../../app/shared/empty.util';
 import { ViewMode } from '../../../../../app/core/shared/view-mode.model';
 import { CollectionElementLinkType } from '../../../../../app/shared/object-collection/collection-element-link.type';
 import { PaginatedList } from '../../../../../app/core/data/paginated-list.model';
@@ -161,6 +161,22 @@ export class ObjectCollectionComponent implements OnInit {
    */
   viewModeEnum = ViewMode;
 
+    /**
+   * The preferred view-mode to display
+   */
+    @Input() viewMode: ViewMode;
+    // punsarn
+  
+    ngOnInit(): void {
+      this.currentMode$ = this.route
+        .queryParams
+        .pipe(
+          filter((params) => isNotEmpty(params.view)),
+          map((params) => params.view),
+          startWith(this.viewMode ? this.viewMode : ViewMode.GridElement) // punsarn
+        );
+    }
+
   /**
    * Placeholder class (defined in global-styles)
    */
@@ -185,21 +201,6 @@ export class ObjectCollectionComponent implements OnInit {
     private router: Router,
     private elementRef: ElementRef,
     @Inject(PLATFORM_ID) private platformId: Object) {
-  }
-
-  ngOnInit(): void {
-    this.currentMode$ = this.route
-      .queryParams
-      .pipe(
-        map((params) => isEmpty(params?.view) ? ViewMode.GridElement : params.view),
-        distinctUntilChanged()
-      );
-    if (isPlatformBrowser(this.platformId)) {
-      const width = this.elementRef.nativeElement.offsetWidth;
-      this.placeholderFontClass = setPlaceHolderAttributes(width);
-    } else {
-      this.placeholderFontClass = 'hide-placeholder-text';
-    }
   }
 
   /**
