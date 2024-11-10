@@ -1,7 +1,7 @@
 import { Injectable, Inject, Injector, SecurityContext } from '@angular/core';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 import { Store, createFeatureSelector, createSelector, select } from '@ngrx/store';
-import { BehaviorSubject, combineLatest, EMPTY, forkJoin, Observable, of as observableOf } from 'rxjs';
+import { BehaviorSubject, concat, combineLatest, EMPTY, forkJoin, Observable, of as observableOf } from 'rxjs';
 import { ThemeState } from './theme.reducer';
 import { SetThemeAction, ThemeActionTypes } from './theme.actions';
 import { expand, filter, map, merge, mergeAll, startWith, switchMap, take, tap, toArray } from 'rxjs/operators';
@@ -365,11 +365,13 @@ export class ThemeService {
 
 		  // Fetch mapped collections
                   const mappedCollections$: Observable<Collection[]> = this.collectionService.findMappedCollectionsFor(snapshotWithData.data.dso.payload, Object.assign(new FindListOptions(), { })).pipe(
-                    getAllCompletedRemoteData<PaginatedList<Collection>>(),
-                    getAllSucceededRemoteDataPayload(),
+                    getFirstCompletedRemoteData<PaginatedList<Collection>>(),
+                    getFirstSucceededRemoteDataPayload(),
                     getPaginatedListPayload<Collection>(),
+		    startWith([]),
                   );
 
+/*
 		  // combine owning and mapped collections
                   const collections$ = combineLatest([owningCollection$, mappedCollections$]).pipe(
                     map(([owningCollection, mappedCollections]: [Collection, Collection[]]) => {
@@ -383,7 +385,6 @@ export class ThemeService {
 		    collections.forEach((collection: Collection) => {
                       if (this.doesCollectionUUIDMatchThemeConfig(collection.id)) {
                         if (hasValue(collection.cssDisplay)) {
-				console.log(collection);
                           this.addCollectionCSSToHead(collection.cssDisplay);
 //			  collectionsdata = this.dSpaceObjectDataService.findById(collection.id).pipe(getAllSucceededRemoteDataPayload());
 			  matchingCollectionsData.push(collection);
@@ -391,28 +392,62 @@ export class ThemeService {
 		      }
 		    })
 		  );
+*/
 
-//		  collectionsdata?.subscribe(val => console.log(val));
+                  let matchingCollectionsData: Collection[] = [];
+		  return new Observable<SetThemeAction | NoOpAction>(observer => 
+		    forkJoin([owningCollection$, mappedCollections$]).subscribe
+		      (([owningCollection, mappedCollections]) => {
+			const allCollections = [owningCollection, ...mappedCollections];
 
-                  console.log(matchingCollectionsData);
-		  console.log(matchingCollectionsData.length);
-                  matchingCollectionsData.forEach((collection: Collection) => {
-		    console.log('test');
-		    const dsoMatch = this.themes.find((theme: Theme) => theme.matches(currentRouteUrl, collection));
-	            console.log(dsoMatch);
-                    console.log(this.getActionForMatch(dsoMatch, currentTheme));
-                  });
+                        allCollections.forEach((collection) => {
+                          if (this.doesCollectionUUIDMatchThemeConfig(collection.id)) {
+                            if (hasValue(collection.cssDisplay)) {
+                              this.addCollectionCSSToHead(collection.cssDisplay);
+                              matchingCollectionsData.push(collection);
+                            }
+                          }
+		        });
+
+			const dsoMatch = this.matchThemeToDSOs(matchingCollectionsData, currentRouteUrl);
+                        const action =  this.getActionForMatch(dsoMatch, currentTheme);
+
+                        // Emit the DSpace object
+                        observer.next(action);
+                        observer.complete();
+                      },
+                      error => {
+                       // Handle any errors
+                       observer.error(error);
+                      }
+                    )
+                  );
+
+
+                    return observableOf(dsoRD.payload).pipe(
+                      this.getAncestorDSOs(),
+                      map((dsos: DSpaceObject[]) => {
+                        const dsoMatch = this.matchThemeToDSOs(dsos, currentRouteUrl);
+                        return this.getActionForMatch(dsoMatch, currentTheme);
+                      })
+                    );
+
+
+
+
+
+
 
 
 
                     return observableOf(matchingCollectionsData).pipe(
                       map((collections: Collection[]) => {
-			console.log(collections);
 			const dsoMatch = this.matchThemeToDSOs(collections, currentRouteUrl);
-			console.log(dsoMatch);
                         return this.getActionForMatch(dsoMatch, currentTheme);
                       })
                     );
+
+
                     return observableOf(dsoRD.payload).pipe(
                       this.getAncestorDSOs(),
                       map((dsos: DSpaceObject[]) => {
@@ -562,7 +597,6 @@ export class ThemeService {
   private matchThemeToDSOs(dsos: DSpaceObject[], currentRouteUrl: string): Theme {
     // iterate over the themes in order, and return the first one that matches
     return this.themes.find((theme: Theme) => {
-	    console.log(dsos);
       // iterate over the dsos's in order (most specific one first, so Item, Collection,
       // Community), and return the first one that matches the current theme
       const match = dsos.find((dso: DSpaceObject) => theme.matches(currentRouteUrl, dso));
