@@ -1,10 +1,10 @@
 import { Injectable, Inject, Injector, SecurityContext } from '@angular/core';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 import { Store, createFeatureSelector, createSelector, select } from '@ngrx/store';
-import { BehaviorSubject, EMPTY, Observable, of as observableOf } from 'rxjs';
+import { BehaviorSubject, concat, combineLatest, EMPTY, forkJoin, Observable, of as observableOf } from 'rxjs';
 import { ThemeState } from './theme.reducer';
 import { SetThemeAction, ThemeActionTypes } from './theme.actions';
-import { expand, filter, map, startWith, switchMap, take, toArray } from 'rxjs/operators';
+import { expand, filter, map, merge, mergeAll, startWith, switchMap, take, tap, toArray } from 'rxjs/operators';
 import { hasNoValue, hasValue, isNotEmpty } from '../empty.util';
 import { RemoteData } from '../../core/data/remote-data';
 import { DSpaceObject } from '../../core/shared/dspace-object.model';
@@ -327,9 +327,6 @@ export class ThemeService {
           if (hasValue(snapshotWithData) && hasValue(snapshotWithData.data) && hasValue(snapshotWithData.data.dso)) {
             const dsoRD: RemoteData<DSpaceObject> = snapshotWithData.data.dso;
 
-
-
-
 	    // If snapshot is a collection then we are on the Collection Browse page
             // Add the collection.css styling to the <head>
             if (snapshotWithData.data.dso.payload.type === 'collection') {
@@ -350,75 +347,72 @@ export class ThemeService {
 	    }
 
 	    if (dsoRD.hasSucceeded) {
-              // We must be viewing a non Collection Browse page
+              // We must be viewing a non collection page
               // Fetch the owning collection and all mapped collections
-              // We need to add the collection.css styling to the <head>
               if (hasValue(snapshotWithData.data.dso.payload) && hasValue(snapshotWithData.data.dso.payload._links)) {
 
-
+		// Check we are on an item page by the presence of a owningCollection href
+		// in the snapshot
                 if (hasValue(snapshotWithData.data.dso.payload._links.owningCollection) && hasValue(snapshotWithData.data.dso.payload._links.owningCollection.href)) {
-                  // Fetch owning collection
-                  // Apply collection.css styling of owning theme to the <head>
-                  const OwningCollection =
+
+                  // Fetch the owning collection
+                  const owningCollection$: Observable<Collection> =
                     this.collectionService.findOwningCollectionFor(snapshotWithData.data.dso.payload)
-                      .pipe(getFirstSucceededRemoteDataPayload())
-                      .subscribe((collection) => {
-                        if ( this.doesCollectionUUIDMatchThemeConfig(collection.id) ) {
-                          specificTheme = collection.id;
-                          this.addCollectionCSSToHead(collection.cssDisplay);
-			}
-		      });
+                      .pipe(getFirstSucceededRemoteDataPayload());
 
-		      // Apply theme of the owning collection
-                      const owning$: Observable<RemoteData<DSpaceObject>> = this.collectionService.findOwningCollectionFor(snapshotWithData.data.dso.payload); 
-                      return owning$.pipe(
-                        getFirstSucceededRemoteDataPayload(),
-			map((dso: DSpaceObject) => {
-                          if (hasValue(dso)) {
-			    const dsoMatch = this.themes.find((theme: Theme) => theme.matches(currentRouteUrl, dso));
-                            return this.getActionForMatch(dsoMatch, currentTheme);
-                          }
-                        })
-                      );
-                }
-
-                // If mapped collections exist, loop through them and apply collection.css styling to the <head>		
-		if (hasValue(snapshotWithData.data.dso.payload._links.mappedCollections) && hasValue(snapshotWithData.data.dso.payload._links.mappedCollections.href)) {
+		  // Fetch all mapped collections
                   const mappedCollections$: Observable<Collection[]> = this.collectionService.findMappedCollectionsFor(snapshotWithData.data.dso.payload, Object.assign(new FindListOptions(), { })).pipe(
-                    getAllCompletedRemoteData<PaginatedList<Collection>>(),
-                    getAllSucceededRemoteDataPayload(),
+                    getFirstCompletedRemoteData<PaginatedList<Collection>>(),
+                    getFirstSucceededRemoteDataPayload(),
                     getPaginatedListPayload<Collection>(),
-                    startWith([]),
-                  ) as Observable<Collection[]>;
-                  mappedCollections$.subscribe((collections: Collection[]) => {
-                    collections.forEach( (collection) => {
-                      if (this.doesCollectionUUIDMatchThemeConfig(collection.id)) {
-                        if (!hasValue(collection.cssDisplay)) {
-                          return;
-                        } else {
-                          this.addCollectionCSSToHead(collection.cssDisplay);
-                        }
-		      }
-                    });
-                  });
-                  // Apply themes of the mapped collection
-                  const mapped$: Observable<RemoteData<PaginatedList<DSpaceObject>>> = this.collectionService.findMappedCollectionsFor(snapshotWithData.data.dso.payload);
-                  return mapped$.pipe(
-                    getAllCompletedRemoteData<PaginatedList<Collection>>(),
-                    getAllSucceededRemoteDataPayload(),
-                    getPaginatedListPayload<Collection>(),
-                    map((dsos: DSpaceObject[]) => {
-                      if (dsos.length !== 0) {
-                        const dsoMatch = this.matchThemeToDSOs(dsos, currentRouteUrl);
-                        return this.getActionForMatch(dsoMatch, currentTheme);
-                      }
-                    })
+		    startWith([]),
                   );
-                };
-              }
-            }
-          }
 
+		  // Loop through the owning and mapped item collections
+		  // Checking each if they match a specific theme rule defined in the config.*.yml.
+		  // If a matching specific theme rule exists then apply the theme
+		  // and collection database styling (if applicable)
+                  let matchingCollectionsData: Collection[] = [];
+		  return new Observable<SetThemeAction | NoOpAction>(observer =>
+		    forkJoin([owningCollection$, mappedCollections$]).subscribe
+		      (([owningCollection, mappedCollections]) => {
+			const allCollections = [owningCollection, ...mappedCollections];
+
+                        allCollections.forEach((collection) => {
+			  // Check each collection if it matches a specific theme rule in the
+                          // config.*.yml
+			  // If a match is found, save the collection to the matchingCollectionsData
+		          // array
+                          if (this.doesCollectionUUIDMatchThemeConfig(collection.id)) {
+                            matchingCollectionsData.push(collection);
+
+			    // Check if collection with matching specific theme rule also has
+			    // database saved styling. If it does apply that to the collection.css
+			    // styling in the <head>
+                            if (hasValue(collection.cssDisplay)) {
+                              this.addCollectionCSSToHead(collection.cssDisplay);
+                            }
+                          }
+		        });
+
+			// Set the DSpace theme linked to the matching collections
+			const dsoMatch = this.matchThemeToDSOs(matchingCollectionsData, currentRouteUrl);
+                        const action =  this.getActionForMatch(dsoMatch, currentTheme);
+
+                        // Emit (save) the getActionForMatch() function output
+                        observer.next(action);
+                        observer.complete();
+                      },
+                      error => {
+                       // Handle any errors
+                       observer.error(error);
+                      }
+                    )
+                  );
+                }
+              }
+      	    }
+          }
           if (hasValue(activatedRouteSnapshot.queryParams) && hasValue(activatedRouteSnapshot.queryParams.scope)) {
             const dsoFromScope$: Observable<RemoteData<DSpaceObject>> = this.dSpaceObjectDataService.findById(activatedRouteSnapshot.queryParams.scope);
 	    this.collectionService.findById(activatedRouteSnapshot.queryParams.scope)
