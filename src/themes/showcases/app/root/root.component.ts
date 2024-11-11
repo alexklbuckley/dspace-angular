@@ -29,7 +29,7 @@ export class RootComponent extends BaseComponent implements OnInit {
   showcaseClassName: string;
   url: string;
   
-  ngOnOnit() {
+  ngOnInit() {
     this.getShowcaseMainClassName();
   }
   ngOnChanges() {

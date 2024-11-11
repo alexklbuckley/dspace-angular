@@ -95,6 +95,9 @@ import { AuthNavMenuComponent } from './app/shared/auth-nav-menu/auth-nav-menu.c
 import {
   ExpandableNavbarSectionComponent
 } from './app/navbar/expandable-navbar-section/expandable-navbar-section.component';
+import {
+  NavbarComponent
+} from './app/navbar/navbar.component';
 import { ItemMetadataComponent } from './app/item-page/edit-item-page/item-metadata/item-metadata.component';
 import {
   EditItemTemplatePageComponent
@@ -160,6 +163,7 @@ const DECLARATIONS = [
   ComcolPageHandleComponent,
   AuthNavMenuComponent,
   ExpandableNavbarSectionComponent,
+  NavbarComponent,
   ItemMetadataComponent,
   EditItemTemplatePageComponent,
   LoadingComponent,

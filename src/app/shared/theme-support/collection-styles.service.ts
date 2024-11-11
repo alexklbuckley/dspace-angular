@@ -13,9 +13,8 @@ import {
   providedIn: 'root',
 })
 export class CollectionStylesDataService {
- 
- constructor(private collectionService: CollectionDataService)
- { }
+
+ constructor(private collectionService: CollectionDataService) { }
 
  private styledCollectionName: ReplaySubject<Collection> = new ReplaySubject(1);
  styledCollectionName$ = this.styledCollectionName.asObservable();
@@ -23,7 +22,7 @@ export class CollectionStylesDataService {
  setStyledCollectionName(collection: string) {
     const collectionRD$ = this.collectionService.findById(collection).pipe(
       getFirstCompletedRemoteData());
-      
+
     collectionRD$.subscribe((collectionRD: RemoteData<Collection>) => {
       this.styledCollectionName.next(collectionRD.payload);
     });
