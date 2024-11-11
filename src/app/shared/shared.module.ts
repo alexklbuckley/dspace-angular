@@ -55,6 +55,7 @@ import {
 } from './object-collection/shared/object-collection-element/abstract-listable-element.component';
 import { ObjectGridComponent } from './object-grid/object-grid.component';
 import { ObjectCollectionComponent } from './object-collection/object-collection.component';
+import { ThemedObjectCollectionComponent } from './object-collection/themed-object-collection.component';
 import { ErrorComponent } from './error/error.component';
 import { LoadingComponent } from './loading/loading.component';
 import { PaginationComponent } from './pagination/pagination.component';
@@ -389,10 +390,11 @@ const COMPONENTS = [
   NumberPickerComponent,
   ObjectListComponent,
   ThemedObjectListComponent,
+  ObjectCollectionComponent,
+  ThemedObjectCollectionComponent,
   ObjectDetailComponent,
   ObjectGridComponent,
   AbstractListableElementComponent,
-  ObjectCollectionComponent,
   PaginationComponent,
   RSSComponent,
   SearchFormComponent,

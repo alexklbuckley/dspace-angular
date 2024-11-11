@@ -1,42 +1,23 @@
-import {
-  ChangeDetectorRef,
-  Component, ElementRef,
-  EventEmitter, Inject,
-  Input,
-  OnInit,
-  Output, PLATFORM_ID,
-} from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import { Observable } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
-
-import { RemoteData } from '../../core/data/remote-data';
 import { PageInfo } from '../../core/shared/page-info.model';
-import { PaginationComponentOptions } from '../pagination/pagination-component-options.model';
-import { SortDirection, SortOptions } from '../../core/cache/models/sort-options.model';
-import { ListableObject } from './shared/listable-object.model';
-import { isEmpty } from '../empty.util';
-import { ViewMode } from '../../core/shared/view-mode.model';
-import { CollectionElementLinkType } from './collection-element-link.type';
-import { PaginatedList } from '../../core/data/paginated-list.model';
-import { Context } from '../../core/shared/context.model';
-import { setPlaceHolderAttributes } from '../utils/object-list-utils';
-import { isPlatformBrowser } from '@angular/common';
+import { ThemedComponent } from '../../shared/theme-support/themed.component';
+import { ObjectCollectionComponent } from './object-collection.component';
+import {ViewMode} from '../../core/shared/view-mode.model';
+import {PaginationComponentOptions} from '../pagination/pagination-component-options.model';
+import {SortDirection, SortOptions} from '../../core/cache/models/sort-options.model';
+import {CollectionElementLinkType} from '../object-collection/collection-element-link.type';
+import {Context} from '../../core/shared/context.model';
+import {RemoteData} from '../../core/data/remote-data';
+import {PaginatedList} from '../../core/data/paginated-list.model';
+import {ListableObject} from '../object-collection/shared/listable-object.model';
 
-/**
- * Component that can render a list of listable objects in different view modes
- */
 @Component({
-  selector: 'ds-viewable-collection',
-  styleUrls: ['./object-collection.component.scss'],
-  templateUrl: './object-collection.component.html',
+  selector: 'ds-themed-viewable-collection',
+  styleUrls: [],
+  templateUrl: '../../shared/theme-support/themed.component.html',
 })
-export class ObjectCollectionComponent implements OnInit {
-  /**
-   * The list of listable objects to render in this component
-   */
-  @Input() objects: RemoteData<PaginatedList<ListableObject>>;
+export class ThemedObjectCollectionComponent extends ThemedComponent<ObjectCollectionComponent> {
 
   /**
    * The current pagination configuration
@@ -166,91 +147,76 @@ export class ObjectCollectionComponent implements OnInit {
    */
   placeholderFontClass: string;
 
-
-
+  /**
+   * The current listable objects
+   */
+  private _objects: RemoteData<PaginatedList<ListableObject>>;
 
   /**
-   * @param cdRef
-   *    ChangeDetectorRef service provided by Angular.
-   * @param route
-   *    Route is a singleton service provided by Angular.
-   * @param router
-   *    Router is a singleton service provided by Angular.
-   * @param elementRef
-   *    Used only to read DOM for the element width
+   * Setter for the objects
+   * @param objects The new objects
    */
-  constructor(
-    private cdRef: ChangeDetectorRef,
-    protected route: ActivatedRoute,
-    protected router: Router,
-    private elementRef: ElementRef,
-    @Inject(PLATFORM_ID) private platformId: Object) {
-  }
-
-  ngOnInit(): void {
-    this.currentMode$ = this.route
-      .queryParams
-      .pipe(
-        map((params) => isEmpty(params?.view) ? ViewMode.ListElement : params.view),
-        distinctUntilChanged()
-      );
-    if (isPlatformBrowser(this.platformId)) {
-      const width = this.elementRef.nativeElement.offsetWidth;
-      this.placeholderFontClass = setPlaceHolderAttributes(width);
-    } else {
-      this.placeholderFontClass = 'hide-placeholder-text';
-    }
+  @Input() set objects(objects: RemoteData<PaginatedList<ListableObject>>) {
+    this._objects = objects;
   }
 
   /**
-   * Updates the page
-   * @param event The new page number
+   * Getter to return the current objects
    */
-  onPageChange(event) {
-    this.pageChange.emit(event);
-  }
-  /**
-   * Updates the page size
-   * @param event The new page size
-   */
-  onPageSizeChange(event) {
-    this.pageSizeChange.emit(event);
-  }
-  /**
-   * Updates the sort direction
-   * @param event The new sort direction
-   */
-  onSortDirectionChange(event) {
-    this.sortDirectionChange.emit(event);
-  }
-  /**
-   * Updates the sort field
-   * @param event The new sort field
-   */
-  onSortFieldChange(event) {
-    this.sortFieldChange.emit(event);
+  get objects() {
+    return this._objects;
   }
 
   /**
-   * Updates the pagination
-   * @param event The new pagination
+   * An event fired when the page is changed.
+   * Event's payload equals to the newly selected page.
    */
-  onPaginationChange(event) {
-    this.paginationChange.emit(event);
+  @Output() change: EventEmitter<{
+    pagination: PaginationComponentOptions,
+    sort: SortOptions
+  }> = new EventEmitter<{
+    pagination: PaginationComponentOptions,
+    sort: SortOptions
+  }>();
+
+  inAndOutputNames: (keyof ObjectCollectionComponent & keyof this)[] = [
+    'objects',
+    'config',
+    'sortConfig',
+    'hasBorder',
+    'hideGear',
+    'selectable',
+    'selectionConfig',
+    'customEvent',
+    'selectable',
+    'selectionConfig',
+    'contentChange',
+    'importable',
+    'importConfig',
+    'importObject',
+    'linkType',
+    'context',
+    'hidePaginationDetail',
+    'showPaginator',
+    'pageChange',
+    'pageSizeChange',
+    'sortDirectionChange',
+    'paginationChange',
+    'sortFieldChange',
+    'prev',
+    'next',
+  ];
+
+  protected getComponentName(): string {
+    return 'ObjectCollectionComponent';
   }
 
-  /**
-   * Go to the previous page
-   */
-  goPrev() {
-      this.prev.emit(true);
+  protected importThemedComponent(themeName: string): Promise<any> {
+    return import(`../../../themes/${themeName}/app/shared/object-collection/object-collection.component`);
   }
 
- /**
-  * Go to the next page
-  */
-  goNext() {
-      this.next.emit(true);
+  protected importUnthemedComponent(): Promise<any> {
+    return import(`./object-collection.component`);
   }
 
 }

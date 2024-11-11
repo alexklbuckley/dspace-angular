@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { BrowseByMetadataPageComponent as BaseComponent } from '../../../../../app/browse-by/browse-by-metadata-page/browse-by-metadata-page.component';
+import { ViewMode } from '../../../../../app/core/shared/view-mode.model';
+
 
 @Component({
   selector: 'ds-browse-by-metadata-page',
@@ -14,4 +16,5 @@ import { BrowseByMetadataPageComponent as BaseComponent } from '../../../../../a
  */
 
 export class BrowseByMetadataPageComponent extends BaseComponent {
+  @Input() viewMode =  'ListElement';
 }

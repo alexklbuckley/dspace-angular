@@ -159,7 +159,7 @@ describe('BrowseByComponent', () => {
       }
     });
     fixture.detectChanges();
-    expect(fixture.debugElement.query(By.css('ds-viewable-collection'))).toBeDefined();
+    expect(fixture.debugElement.query(By.css('ds-themed-viewable-collection'))).toBeDefined();
   });
 
   describe('when showPaginator is true and browseEntries are provided', () => {

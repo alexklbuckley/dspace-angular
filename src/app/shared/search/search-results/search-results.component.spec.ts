@@ -35,7 +35,7 @@ describe('SearchResultsComponent', () => {
     (comp as any).searchResults = { hasSucceeded: true, isLoading: false, payload: { page: { length: 2 } } };
     (comp as any).searchConfig = {};
     fixture.detectChanges();
-    expect(fixture.debugElement.query(By.css('ds-viewable-collection'))).not.toBeNull();
+    expect(fixture.debugElement.query(By.css('ds-themed-viewable-collection'))).not.toBeNull();
   });
 
   it('should not display link when results are not empty', () => {

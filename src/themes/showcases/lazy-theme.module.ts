@@ -111,6 +111,7 @@ import {
   CommunityPageSubCollectionListComponent
 } from './app/community-page/sub-collection-list/community-page-sub-collection-list.component';
 import { ObjectListComponent } from './app/shared/object-list/object-list.component';
+import { ObjectCollectionComponent } from './app/shared/object-collection/object-collection.component';
 
 import { BrowseByMetadataPageComponent } from './app/browse-by/browse-by-metadata-page/browse-by-metadata-page.component';
 import { BrowseByDatePageComponent } from './app/browse-by/browse-by-date-page/browse-by-date-page.component';
@@ -167,6 +168,7 @@ const DECLARATIONS = [
   SearchSettingsComponent,
   ComcolPageBrowseByComponent,
   ObjectListComponent,
+  ObjectCollectionComponent,
   BrowseByMetadataPageComponent,
   BrowseByDatePageComponent,
   BrowseByTitlePageComponent,
