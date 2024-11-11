@@ -7,7 +7,7 @@
     </ds-mirador-viewer>
   </div>
 </div>
-  <div class="d-flex flex-row">
+  <div class="d-flex flex-row showcase_item_title">
     <h2 class="item-page-title-field mr-auto">
         <ds-metadata-values [mdValues]="object?.allMetadata(['dc.title'])"></ds-metadata-values>
       </h2>
@@ -18,7 +18,7 @@
       <ds-dso-page-edit-button [pageRoute]="itemPageRoute" [dso]="object" [tooltipMsg]="'item.page.edit'"></ds-dso-page-edit-button>
     </div>
   </div>
-  <div class="showcase_item_authordateabstract">
+  <div class="showcase_item_authordateabstract border border-primary rounded">
       <div class="showcase_item_authordateabstract_item" id="showcase_item_author">
           <ds-metadata-representation-list class="ds-item-page-mixed-author-field"
             [parentItem]="object"
@@ -27,40 +27,38 @@
             [label]="'relationships.isAuthorOf' | translate">
           </ds-metadata-representation-list>
           <ds-item-page-date-field [item]="object"></ds-item-page-date-field>
+          <div class="showcase_item_thumbnail">
+            <ng-container *ngIf="!mediaViewer.image">
+              <ds-metadata-field-wrapper [hideIfNoTextContent]="false">
+                <ds-thumbnail [thumbnail]="object?.thumbnail | async"></ds-thumbnail>
+              </ds-metadata-field-wrapper>
+            </ng-container>
+            <ng-container *ngIf="mediaViewer.image">
+            <ds-media-viewer [item]="object" [videoOptions]="mediaViewer.video"></ds-media-viewer>
+            </ng-container>
+            <ds-themed-item-page-file-section [item]="object"></ds-themed-item-page-file-section>
+          </div>
       </div>
-      <div class="showcase_item_authordateabstract_item" id="showcase_item_abstract">
-        <ds-item-page-abstract-field [item]="object"></ds-item-page-abstract-field>
-      </div>
-  </div>
-  <div class="row" id="showcase_item_thumbnail">
-    <div class="col-xs-12 col-md-4">
-      <ng-container *ngIf="!mediaViewer.image">
-        <ds-metadata-field-wrapper [hideIfNoTextContent]="false">
-          <ds-thumbnail [thumbnail]="object?.thumbnail | async"></ds-thumbnail>
-        </ds-metadata-field-wrapper>
-      </ng-container>
-      <ng-container *ngIf="mediaViewer.image">
-        <ds-media-viewer [item]="object" [videoOptions]="mediaViewer.video"></ds-media-viewer>
-      </ng-container>
-    </div>
-    <div class="col-xs-12 col-md-6">
-      <div id="showcase_item_keywords">
-        <ds-generic-item-page-field [item]="object"
-          [fields]="['aut.subject.showcase']"
-	  [label]="'Showcase specific keywords' | translate">
-        </ds-generic-item-page-field>
-      </div>
+    <div class="showcase_item_authordateabstract_item" id="showcase_item_abstract">
+      <ds-item-page-abstract-field [item]="object"></ds-item-page-abstract-field>
     </div>
   </div>
-  <div class="showcase_item_additionalinfo">
-    <div class="showcase_item_additionalinfo_item column_1">
-      <ds-themed-item-page-file-section [item]="object"></ds-themed-item-page-file-section>
+  <div class="showcase_item_additionalinfo border border-primary rounded">
+    <div class="showcase_item_additionalinfo_item">
       <ds-generic-item-page-field [item]="object"
         [fields]="['dc.type']"
         [label]="'item.page.dc.type' | translate ">
       </ds-generic-item-page-field>
+      <div>
+        <div id="showcase_item_keywords">
+          <ds-generic-item-page-field [item]="object"
+            [fields]="['aut.subject.showcase']"
+            [label]="'Showcase specific keywords' | translate">
+          </ds-generic-item-page-field>
+        </div>
+      </div>
     </div>
-    <div class="showcase_item_additionalinfo_item column_2">
+    <div class="showcase_item_additionalinfo_item">
       <ds-metadata-representation-list class="ds-item-page-mixed-author-field"
         [parentItem]="object"
         [itemType]="'Person'"
@@ -72,7 +70,7 @@
         [label]="'item.page.journal-title' | translate">
       </ds-generic-item-page-field>
     </div>
-    <div class="showcase_item_additionalinfo_item column_3">
+    <div class="showcase_item_additionalinfo_item">
       <ds-generic-item-page-field [item]="object"
         [fields]="['thesis.degree.name']"
         [label]="'item.page.thesis.name' | translate">
@@ -86,15 +84,14 @@
 {{ mdValue.value }}<span *ngIf="!last" [innerHTML]="'<br/>'"></span>
         </a>
       </ds-metadata-field-wrapper>
+      <ds-generic-item-page-field [item]="object"
+        [fields]="['dc.identifier.citation']"
+        [label]="'item.page.citation' | translate">
+      </ds-generic-item-page-field>
+      <ds-generic-item-page-field [item]="object"
+        [fields]="['dc.rights']"
+        [label]="'item.page.dc.rights' | translate">
+      </ds-generic-item-page-field>
     </div>
   </div>
-  <div>
-    <ds-generic-item-page-field [item]="object"
-      [fields]="['dc.identifier.citation']"
-      [label]="'item.page.citation' | translate">
-    </ds-generic-item-page-field>
-    <ds-generic-item-page-field [item]="object"
-      [fields]="['dc.rights']"
-      [label]="'item.page.dc.rights' | translate">
-    </ds-generic-item-page-field>
-  </div>
+
