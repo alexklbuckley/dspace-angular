@@ -368,14 +368,20 @@ export class ThemeService {
 		    startWith([]),
                   );
 
+                  // Fetch the direct ancestor DSpace Objects - default to these if the item
+		  // has no collections with a matching specific theme UUID rule
+		  const ancestorDSOs$ = observableOf(dsoRD.payload).pipe(
+                    this.getAncestorDSOs(),
+		  );
+
 		  // Loop through the owning and mapped item collections
 		  // Checking each if they match a specific theme rule defined in the config.*.yml.
 		  // If a matching specific theme rule exists then apply the theme
 		  // and collection database styling (if applicable)
                   let matchingCollectionsData: Collection[] = [];
 		  return new Observable<SetThemeAction | NoOpAction>(observer =>
-		    forkJoin([owningCollection$, mappedCollections$]).subscribe
-		      (([owningCollection, mappedCollections]) => {
+		    forkJoin([owningCollection$, mappedCollections$, ancestorDSOs$]).subscribe
+		      (([owningCollection, mappedCollections, ancestorDSOs]) => {
 			const allCollections = [owningCollection, ...mappedCollections];
 
                         allCollections.forEach((collection) => {
@@ -395,9 +401,18 @@ export class ThemeService {
                           }
 		        });
 
-			// Set the DSpace theme linked to the matching collections
-			const dsoMatch = this.matchThemeToDSOs(matchingCollectionsData, currentRouteUrl);
-                        const action =  this.getActionForMatch(dsoMatch, currentTheme);
+                        let dsoMatch;
+                        let action;
+			if (matchingCollectionsData.length > 0) {
+			  // Set the DSpace theme linked to the matching collections
+			  dsoMatch = this.matchThemeToDSOs(matchingCollectionsData, currentRouteUrl);
+                          action =  this.getActionForMatch(dsoMatch, currentTheme);
+                        } else {
+			  // If there's no collection matching a specific rule, set the default
+                          // ancestor theme
+                          dsoMatch = this.matchThemeToDSOs(ancestorDSOs, currentRouteUrl);
+                          action =  this.getActionForMatch(dsoMatch, currentTheme);
+			}
 
                         // Emit (save) the getActionForMatch() function output
                         observer.next(action);
@@ -409,6 +424,7 @@ export class ThemeService {
                       }
                     )
                   );
+
                 }
               }
       	    }
