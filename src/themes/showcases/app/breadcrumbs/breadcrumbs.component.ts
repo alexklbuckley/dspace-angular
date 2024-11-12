@@ -1,7 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { BreadcrumbsService } from '../../../../app/breadcrumbs/breadcrumbs.service';
 import { BreadcrumbsComponent as BaseComponent } from '../../../../app/breadcrumbs/breadcrumbs.component';
+import {
+  APP_CONFIG,
+  AppConfig,
+} from '../../../../config/app-config.interface';
+
 
 /**
  * Component representing the breadcrumbs of a page
@@ -16,10 +21,13 @@ import { BreadcrumbsComponent as BaseComponent } from '../../../../app/breadcrum
 export class BreadcrumbsComponent extends BaseComponent {
   showcaseBreadcrumbsNeeded: boolean;
   url: string;
+  useCollectionHomePage: boolean;
+  useCollectionHomePageUUID: string
 
   constructor(
     breadcrumbsService: BreadcrumbsService,
     private router: Router,
+    @Inject(APP_CONFIG) protected appConfig: AppConfig,
   ) {
     super(breadcrumbsService);
     this.router.events.subscribe(events => {
@@ -41,5 +49,7 @@ export class BreadcrumbsComponent extends BaseComponent {
     } else {
        this.showcaseBreadcrumbsNeeded = true;
     }
+    this.useCollectionHomePage = this.appConfig.collection.routeThrough.collectionHomePage;
+    this.useCollectionHomePageUUID = this.appConfig.collection.routeThrough.uuid;
   }
 }

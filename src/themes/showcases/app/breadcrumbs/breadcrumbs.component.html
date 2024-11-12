@@ -11,7 +11,13 @@
     </nav>
 
     <ng-template #breadcrumb let-text="text" let-url="url">
-        <li class="breadcrumb-item"><div class="breadcrumb-item-limiter"><a [routerLink]="url" class="text-truncate">{{text | translate}}</a></div></li>
+	<ng-container *ngIf="(url.includes('/collections/') && (useCollectionHomePage === true) && (this.useCollectionHomePageUUID === url.split('/').pop())); else nonShowcaseHomePageBreadcrumb">
+          <li class="breadcrumb-item"><div class="breadcrumb-item-limiter"><a [routerLink]="url + '/home'" class="text-truncate">{{text | translate}}</a></div></li>
+	</ng-container>
+
+	<ng-template #nonShowcaseHomePageBreadcrumb>
+          <li class="breadcrumb-item"><div class="breadcrumb-item-limiter"><a [routerLink]="url" class="text-truncate">{{text | translate}}</a></div></li>
+	</ng-template>
     </ng-template>
 
     <ng-template #activeBreadcrumb let-text="text">
