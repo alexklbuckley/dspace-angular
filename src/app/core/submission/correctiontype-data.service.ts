@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 import {
-  EMPTY,
   map,
   Observable,
   of,
 } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
 
 import { AuthService } from '../../core/auth/auth.service';
 import { dataService } from '../cache/builders/build-decorators';
@@ -70,16 +68,9 @@ export class CorrectionTypeDataService extends IdentifiableDataService<Correctio
    * @returns the list of correction types for the item
    */
   findByItem(itemUuid: string, useCachedVersionIfAvailable): Observable<RemoteData<PaginatedList<CorrectionType>>> {
-    return this.authService.isAuthenticated().pipe(
-      switchMap(auth => {
-        if (!auth) {
-          return EMPTY;
-        }
-        const options = new FindListOptions();
-        options.searchParams = [new RequestParam('uuid', itemUuid)];
-        return this.searchData.searchBy(this.searchFindByItem, options, useCachedVersionIfAvailable);
-      }),
-    );
+    const options = new FindListOptions();
+    options.searchParams = [new RequestParam('uuid', itemUuid)];
+    return this.searchData.searchBy(this.searchFindByItem, options, useCachedVersionIfAvailable);
   }
 
   /**
