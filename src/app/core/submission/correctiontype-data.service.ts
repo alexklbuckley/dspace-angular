@@ -2,10 +2,8 @@ import { Injectable } from '@angular/core';
 import {
   map,
   Observable,
-  of,
 } from 'rxjs';
 
-import { AuthService } from '../../core/auth/auth.service';
 import { dataService } from '../cache/builders/build-decorators';
 import { RemoteDataBuildService } from '../cache/builders/remote-data-build.service';
 import { RequestParam } from '../cache/models/request-param.model';
@@ -25,7 +23,6 @@ import {
 import { CorrectionType } from './models/correctiontype.model';
 import { CORRECTION_TYPE } from './models/correctiontype.resource-type';
 
-
 /**
  * A service that provides methods to make REST requests with correctiontypes endpoint.
  */
@@ -43,7 +40,6 @@ export class CorrectionTypeDataService extends IdentifiableDataService<Correctio
     protected objectCache: ObjectCacheService,
     protected halService: HALEndpointService,
     protected notificationsService: NotificationsService,
-    protected authService: AuthService,
   ) {
     super('correctiontypes', requestService, rdbService, objectCache, halService);
 
